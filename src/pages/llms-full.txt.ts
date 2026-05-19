@@ -102,6 +102,7 @@ evidence hashes.
 Routes:
 - ${SITE.url}/                Overview, operating loop, beta waitlist
 - ${SITE.url}/how-it-works    Mechanism
+- ${SITE.url}/compare         Where AgentBounty fits (category-level comparison)
 - ${SITE.url}/start           Tutorial
 - ${SITE.url}/guides          How-to
 - ${SITE.url}/reference       Fields, schemas, states

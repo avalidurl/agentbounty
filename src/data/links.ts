@@ -32,9 +32,11 @@ export const TALLY = {
 export const TOP_NAV: NavLink[] = [
   { label: "Overview", href: "/" },
   { label: "How it works", href: "/how-it-works" },
+  { label: "Compare", href: "/compare" },
   { label: "Start here", href: "/start" },
   { label: "Guides", href: "/guides" },
   { label: "Reference", href: "/reference" },
+  { label: "FAQ", href: "/faq" },
   { label: "Roadmap", href: "/roadmap" },
   { label: "Status", href: "/status" },
   { label: "Token", href: "/token" },
@@ -117,6 +119,7 @@ export const COMMUNITY_GROUP_LABELS: Record<CommunityGroupKey, string> = {
 export const PROTOCOL_LINKS: NavLink[] = [
   { label: "Overview", href: "/" },
   { label: "How it works", href: "/how-it-works" },
+  { label: "Compare", href: "/compare" },
   { label: "Roadmap", href: "/roadmap" },
   { label: "Reviewers", href: "/reviewers" },
   { label: "Token", href: "/token" },

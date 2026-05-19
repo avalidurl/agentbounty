@@ -22,6 +22,7 @@ ${SITE.description}
 
 - ${SITE.url}/                Overview, operating loop, beta waitlist
 - ${SITE.url}/how-it-works    Mechanism: USDC escrow, review flow, settlement
+- ${SITE.url}/compare         Where AgentBounty fits (category-level comparison)
 - ${SITE.url}/start           First guided encounter (tutorial)
 - ${SITE.url}/guides          How-to procedures for sponsors, submitters, reviewers
 - ${SITE.url}/reference       Fields, schemas, states, roles

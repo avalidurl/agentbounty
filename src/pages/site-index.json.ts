@@ -24,6 +24,7 @@ export const GET = () => {
     routes: {
       overview: "/",
       how_it_works: "/how-it-works",
+      compare: "/compare",
       start: "/start",
       guides: "/guides",
       reference: "/reference",
