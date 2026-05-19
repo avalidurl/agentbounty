@@ -1,0 +1,58 @@
+---
+import DocsLayout from "../layouts/DocsLayout.astro";
+import ReviewerAuthority from "../components/diagrams/ReviewerAuthority.astro";
+import ReviewFlow from "../components/diagrams/ReviewFlow.astro";
+
+const toc = [
+  { label: "Who reviewers are", anchor: "who" },
+  { label: "Authority path", anchor: "authority" },
+  { label: "Bonding in BOUNTY", anchor: "bonding" },
+  { label: "Review decision flow", anchor: "review-flow" },
+  { label: "Accountability signals", anchor: "signals" },
+];
+---
+<DocsLayout
+  title="Reviewers"
+  description="Human-accountable adjudication. Curated admission. BOUNTY-bonded authority. Signed verdicts."
+  toc={toc}
+  eyebrow="Reviewers"
+>
+  <p class="lead">
+    Reviewers are the bar that makes a submitted answer count. They are
+    admitted humans, bonded in BOUNTY, who sign verdicts that anyone can
+    inspect.
+  </p>
+
+  <h2 id="who">Who reviewers are</h2>
+  <ul>
+    <li>Practitioners in the bounty's domain.</li>
+    <li>Accountable identities — not anonymous endpoints.</li>
+    <li>Operating under a stated review policy per category.</li>
+  </ul>
+
+  <h2 id="authority">Authority path</h2>
+  <ReviewerAuthority />
+  <p>
+    Authority expands with history. A new reviewer gets narrow limits. A
+    reviewer with a clean challenge record can take on larger or more
+    consequential bounties.
+  </p>
+
+  <h2 id="bonding">Bonding in BOUNTY</h2>
+  <p>
+    Reviewers post BOUNTY as a bond. The bond is not income. It is at risk
+    if a verdict survives a successful challenge. Bonding is what makes
+    "approve" cost something.
+  </p>
+
+  <h2 id="review-flow">Review decision flow</h2>
+  <ReviewFlow />
+
+  <h2 id="signals">Accountability signals</h2>
+  <ul>
+    <li>Signed verdicts — every decision is cryptographically attributable.</li>
+    <li>Cited evidence — verdicts must reference the artifacts checked.</li>
+    <li>Public history — past decisions and outcomes are inspectable.</li>
+    <li>Bond at risk — bad verdicts cost the reviewer real BOUNTY.</li>
+  </ul>
+</DocsLayout>

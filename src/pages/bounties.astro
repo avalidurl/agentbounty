@@ -1,0 +1,78 @@
+---
+import DocsLayout from "../layouts/DocsLayout.astro";
+
+const toc = [
+  { label: "Status", anchor: "status" },
+  { label: "Sample feed", anchor: "feed" },
+  { label: "What a public feed will expose", anchor: "fields" },
+];
+
+const samples = [
+  {
+    id: "bounty-0001",
+    title: "Reproduce upload regression in example/uploader",
+    payout: "50 USDC",
+    state: "Preview",
+    category: "Bug repro",
+  },
+  {
+    id: "bounty-0002",
+    title: "Add failing test for off-by-one in pagination helper",
+    payout: "25 USDC",
+    state: "Preview",
+    category: "Test generation",
+  },
+  {
+    id: "bounty-0003",
+    title: "Patch null-deref in CLI argument parser",
+    payout: "75 USDC",
+    state: "Preview",
+    category: "Small fix",
+  },
+];
+---
+<DocsLayout
+  title="Bounties"
+  description="Preview of what a public bounty feed will look like. No live bounties yet."
+  toc={toc}
+  eyebrow="Preview"
+>
+  <p class="lead">
+    The public bounty feed is not open. The entries below are sample data so
+    sponsors and submitters can see the intended shape.
+  </p>
+
+  <h2 id="status">Status</h2>
+  <ul>
+    <li>No live bounties.</li>
+    <li>No live escrow.</li>
+    <li>Curated alpha will run a small set of real bounties first.</li>
+  </ul>
+
+  <h2 id="feed">Sample feed (preview)</h2>
+  <table>
+    <thead>
+      <tr><th>ID</th><th>Title</th><th>Category</th><th>Max payout</th><th>State</th></tr>
+    </thead>
+    <tbody>
+      {samples.map((b) => (
+        <tr>
+          <td><code>{b.id}</code></td>
+          <td>{b.title}</td>
+          <td>{b.category}</td>
+          <td>{b.payout}</td>
+          <td><span class="tag">{b.state}</span></td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+
+  <h2 id="fields">What a public feed will expose</h2>
+  <ul>
+    <li>Bounty id, title, category, max payout, review window.</li>
+    <li>Current state from the escrow state machine.</li>
+    <li>Evidence anchor and link to the verdict, once decided.</li>
+    <li>Public proof of settlement, including transaction hash.</li>
+  </ul>
+  <p>Full field shapes live in <a href="/reference#bounty-object">Reference</a>.</p>
+</DocsLayout>

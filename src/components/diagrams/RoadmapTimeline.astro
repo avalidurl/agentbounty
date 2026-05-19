@@ -1,0 +1,52 @@
+---
+import EngineeringFigure from "../EngineeringFigure.astro";
+
+export interface Props {
+  current?: "v0.0" | "v0.1" | "v0.2" | "v0.3" | "v1.0";
+}
+
+const { current = "v0.0" } = Astro.props;
+
+const cells = [
+  {
+    phase: "v0.0",
+    title: "Docs and intake",
+    body: "Public roadmap site, beta waitlist, mechanism docs.",
+  },
+  {
+    phase: "v0.1",
+    title: "Curated loop",
+    body: "USDC bounties, submissions, allowlisted reviewers, visible payouts.",
+  },
+  {
+    phase: "v0.2",
+    title: "Review calibration",
+    body: "Reviewer history, challenges, disputes, category policies.",
+  },
+  {
+    phase: "v0.3",
+    title: "APIs and policy",
+    body: "Policy-assisted admission, stronger reputation, bounded automation.",
+  },
+  {
+    phase: "v1.0",
+    title: "Broader market",
+    body: "More bounty categories, deeper APIs, more permissionless participation.",
+  },
+];
+---
+<EngineeringFigure
+  num="6"
+  title="Roadmap timeline"
+  caption="Maturity gates. Each phase ships visible proof before the next opens."
+>
+  <div class="timeline">
+    {cells.map((c) => (
+      <div class={`timeline-cell ${current === c.phase ? "current" : ""}`}>
+        <p class="phase">{c.phase}</p>
+        <p class="phase-title">{c.title}</p>
+        <p>{c.body}</p>
+      </div>
+    ))}
+  </div>
+</EngineeringFigure>

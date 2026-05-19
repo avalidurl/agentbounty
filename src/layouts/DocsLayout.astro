@@ -1,0 +1,49 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import StatusBanner from "../components/StatusBanner.astro";
+import "../styles/docs.css";
+import "../styles/diagrams.css";
+
+export interface TocItem {
+  label: string;
+  anchor: string;
+}
+
+export interface Props {
+  title: string;
+  description?: string;
+  status?: "preview" | "alpha" | "live";
+  toc?: TocItem[];
+  eyebrow?: string;
+  showStatusBanner?: boolean;
+}
+
+const {
+  title,
+  description,
+  status = "preview",
+  toc = [],
+  eyebrow,
+  showStatusBanner = true,
+} = Astro.props;
+---
+<BaseLayout title={title} description={description}>
+  {showStatusBanner ? <StatusBanner status={status} /> : null}
+  <div class="docs-shell shell">
+    <article class="docs-main">
+      {eyebrow ? <p class="eyebrow">{eyebrow}</p> : null}
+      <h1>{title}</h1>
+      {toc.length > 0 ? (
+        <nav class="page-toc" aria-label="On this page">
+          <span class="page-toc-label">On this page</span>
+          <ul>
+            {toc.map((t) => (
+              <li><a href={`#${t.anchor}`}>{t.label}</a></li>
+            ))}
+          </ul>
+        </nav>
+      ) : null}
+      <slot />
+    </article>
+  </div>
+</BaseLayout>

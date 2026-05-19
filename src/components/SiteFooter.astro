@@ -1,0 +1,153 @@
+---
+import {
+  SITE,
+  PROTOCOL_LINKS,
+  DOCS_LINKS,
+  CONTACT_LINKS,
+  LEGAL_LINKS,
+  TALLY,
+} from "../data/links";
+
+const year = new Date().getFullYear();
+---
+<style>
+  .site-footer {
+    border-top: 1px solid var(--line);
+    background: var(--panel);
+    margin-top: var(--space-8);
+  }
+  .site-footer-inner {
+    width: min(var(--max-content), calc(100vw - 32px));
+    margin: 0 auto;
+    padding: var(--space-7) 0 var(--space-6);
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-6);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    padding: var(--space-5) 0;
+  }
+  .footer-group h5 {
+    margin: 0 0 var(--space-2);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .footer-group ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  .footer-group a {
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .footer-group a:hover {
+    text-decoration: underline;
+  }
+  .footer-meta {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .footer-cta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-5);
+  }
+  .footer-cta p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  @media (max-width: 760px) {
+    .footer-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (max-width: 480px) {
+    .footer-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+<footer class="site-footer" aria-label="Site footer and sitemap">
+  <div class="site-footer-inner shell">
+    <div class="footer-cta">
+      <a
+        class="button"
+        href={TALLY.url}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {TALLY.buttonLabel}
+      </a>
+      <p>{TALLY.helperCopy}</p>
+    </div>
+    <nav class="footer-grid" aria-label="Footer sitemap">
+      <div class="footer-group">
+        <h5>Protocol</h5>
+        <ul>
+          {PROTOCOL_LINKS.map((l) => (
+            <li><a href={l.href}>{l.label}</a></li>
+          ))}
+        </ul>
+      </div>
+      <div class="footer-group">
+        <h5>Docs</h5>
+        <ul>
+          {DOCS_LINKS.map((l) => (
+            <li>
+              <a
+                href={l.href}
+                target={l.external ? "_blank" : undefined}
+                rel={l.external ? "noopener noreferrer" : undefined}
+              >
+                {l.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div class="footer-group">
+        <h5>Community</h5>
+        <ul>
+          {CONTACT_LINKS.map((l) => (
+            <li>
+              <a
+                href={l.href}
+                target={l.external ? "_blank" : undefined}
+                rel={l.external ? "noopener noreferrer" : undefined}
+              >
+                {l.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div class="footer-group">
+        <h5>Legal</h5>
+        <ul>
+          {LEGAL_LINKS.map((l) => (
+            <li><a href={l.href}>{l.label}</a></li>
+          ))}
+        </ul>
+      </div>
+    </nav>
+    <div class="footer-meta">
+      <span>&copy; {year} {SITE.name}. {SITE.status}.</span>
+      <span>{SITE.operatingSentence}</span>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,43 @@
+---
+import DocsLayout from "../../layouts/DocsLayout.astro";
+import { getCollection } from "astro:content";
+
+const entries = (await getCollection("blog", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+
+const toc = [
+  { label: "Entries", anchor: "entries" },
+  { label: "RSS", anchor: "rss" },
+];
+---
+<DocsLayout
+  title="Blog"
+  description="Longer posts about AgentBounty, adjudication, and progressive autonomy."
+  toc={toc}
+  eyebrow="Blog"
+>
+  <p class="lead">
+    For short build notes, see <a href="/devlog">/devlog</a>.
+  </p>
+  <p>
+    Subscribe: <a href="/rss/blog.xml">/rss/blog.xml</a>
+  </p>
+
+  <h2 id="entries">Entries</h2>
+  <ul>
+    {entries.map((entry) => (
+      <li>
+        <a href={`/blog/${entry.id}/`}>
+          <strong>{entry.data.title}</strong>
+        </a>
+        <div style="color: var(--muted); font-size: 13px;">
+          {entry.data.pubDate.toISOString().slice(0, 10)} · {entry.data.description}
+        </div>
+      </li>
+    ))}
+  </ul>
+
+  <h2 id="rss">RSS</h2>
+  <p><a href="/rss/blog.xml">/rss/blog.xml</a></p>
+</DocsLayout>

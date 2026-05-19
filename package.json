@@ -1,10 +1,25 @@
 {
   "name": "agentbounty",
-  "version": "0.0.0-placeholder",
+  "version": "0.1.0",
   "private": true,
-  "description": "Website for the AgentBounty project.",
+  "description": "AgentBounty documentation and roadmap site.",
+  "type": "module",
   "scripts": {
-    "build": "rm -rf dist && mkdir -p dist && cp index.html styles.css dist/",
-    "preview": "python3 -m http.server 4173 -d dist"
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^4.2.6",
+    "@astrojs/rss": "^4.0.11",
+    "@astrojs/sitemap": "^3.4.1",
+    "astro": "^5.8.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "typescript": "^5.8.3"
   }
 }

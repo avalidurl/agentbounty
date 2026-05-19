@@ -1,0 +1,58 @@
+---
+import { TALLY } from "../data/links";
+
+export interface Props {
+  variant?: "default" | "ghost";
+  showHelper?: boolean;
+  label?: string;
+}
+
+const { variant = "default", showHelper = true, label = TALLY.buttonLabel } =
+  Astro.props;
+---
+<div class="tally-button-wrap">
+  <a
+    class={variant === "ghost" ? "button button-ghost" : "button"}
+    href={TALLY.url}
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    {label}
+  </a>
+  {showHelper ? (
+    <div class="tally-helpers">
+      <p class="tally-helper">{TALLY.helperCopy}</p>
+      <p class="tally-helper tally-helper-sanctions">
+        By joining the waitlist, you confirm that you are not located in a
+        restricted jurisdiction and are not subject to applicable sanctions
+        restrictions.
+      </p>
+    </div>
+  ) : null}
+</div>
+
+<style>
+  .tally-button-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .tally-helpers {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+    flex: 1 1 280px;
+  }
+  .tally-helper {
+    margin: 0;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.45;
+  }
+  .tally-helper-sanctions {
+    font-size: 11px;
+    max-width: 60ch;
+  }
+</style>

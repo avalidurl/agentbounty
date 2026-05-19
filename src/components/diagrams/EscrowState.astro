@@ -1,0 +1,15 @@
+---
+import EngineeringFigure from "../EngineeringFigure.astro";
+---
+<EngineeringFigure
+  num="2"
+  title="Escrow state machine"
+  caption="USDC-denominated bounty state. Disputed and Refunded are off the happy path."
+>
+<pre class="diagram-pre">
+Draft ─▶ Funded ─▶ In review ─▶ Queued ─▶ Settled ─▶ Claimed
+                       │             │
+                       ▼             ▼
+                   Disputed       Refunded
+</pre>
+</EngineeringFigure>

@@ -1,0 +1,186 @@
+---
+import { SITE, TOP_NAV } from "../data/links";
+
+const path = Astro.url.pathname;
+const isActive = (href: string) => {
+  if (href === "/") return path === "/" || path === "";
+  return path === href || path.startsWith(href + "/");
+};
+---
+<style>
+  .site-header {
+    border-bottom: 1px solid var(--line);
+    background: var(--bg);
+  }
+  .site-header-inner {
+    width: min(var(--max-content), calc(100vw - 32px));
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: var(--space-4) 0;
+  }
+  .header-right {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4);
+  }
+  .brand {
+    text-decoration: none;
+    color: var(--ink);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    font-size: 18px;
+  }
+  .brand .brand-sub {
+    color: var(--muted);
+    font-weight: 500;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    display: block;
+    margin-top: 2px;
+  }
+  .nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    font-size: 13px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .nav a {
+    text-decoration: none;
+    color: var(--ink);
+    padding: 4px 0;
+    border-bottom: 1px solid transparent;
+  }
+  .nav a[aria-current="page"] {
+    border-bottom-color: var(--ink);
+  }
+  .nav a:hover {
+    border-bottom-color: var(--ink);
+  }
+  .theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    color: var(--ink);
+    padding: 6px 10px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    line-height: 1;
+  }
+  .theme-toggle:hover {
+    background: var(--ink);
+    color: var(--bg);
+  }
+  .theme-toggle:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
+  }
+  .theme-toggle-dot {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 1px solid currentColor;
+    background:
+      linear-gradient(90deg, currentColor 50%, transparent 50%);
+  }
+  .theme-toggle-text {
+    text-transform: uppercase;
+  }
+</style>
+<header class="site-header" aria-label="Site header">
+  <div class="site-header-inner">
+    <a class="brand" href="/" aria-label={`${SITE.name} home`}>
+      {SITE.name}
+      <span class="brand-sub">Bounty market for adjudicated work</span>
+    </a>
+    <div class="header-right">
+      <nav aria-label="Primary navigation">
+        <ul class="nav">
+          {TOP_NAV.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                aria-current={isActive(item.href) ? "page" : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+      <button
+        type="button"
+        class="theme-toggle"
+        data-theme-toggle
+        aria-label="Toggle color theme"
+        aria-pressed="false"
+      >
+        <span class="theme-toggle-dot" aria-hidden="true"></span>
+        <span class="theme-toggle-text">Theme</span>
+      </button>
+    </div>
+  </div>
+</header>
+<script is:inline>
+  (function () {
+    var STORAGE_KEY = "agentbounty-theme";
+    var root = document.documentElement;
+    var btn = document.querySelector("[data-theme-toggle]");
+    if (!btn) return;
+
+    function currentTheme() {
+      var attr = root.getAttribute("data-theme");
+      if (attr === "dark" || attr === "light") return attr;
+      return window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
+    }
+
+    function syncButton(theme) {
+      var next = theme === "dark" ? "light" : "dark";
+      btn.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
+      btn.setAttribute("aria-label", "Switch to " + next + " theme");
+      var text = btn.querySelector(".theme-toggle-text");
+      if (text) text.textContent = next === "dark" ? "Dark" : "Light";
+    }
+
+    syncButton(currentTheme());
+
+    btn.addEventListener("click", function () {
+      var next = currentTheme() === "dark" ? "light" : "dark";
+      root.setAttribute("data-theme", next);
+      try {
+        localStorage.setItem(STORAGE_KEY, next);
+      } catch (e) {}
+      syncButton(next);
+    });
+
+    if (window.matchMedia) {
+      var mq = window.matchMedia("(prefers-color-scheme: dark)");
+      var onChange = function () {
+        try {
+          var stored = localStorage.getItem(STORAGE_KEY);
+          if (stored !== "dark" && stored !== "light") {
+            syncButton(currentTheme());
+          }
+        } catch (e) {}
+      };
+      if (mq.addEventListener) mq.addEventListener("change", onChange);
+      else if (mq.addListener) mq.addListener(onChange);
+    }
+  })();
+</script>

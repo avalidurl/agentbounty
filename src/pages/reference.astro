@@ -1,0 +1,123 @@
+---
+import DocsLayout from "../layouts/DocsLayout.astro";
+import EscrowState from "../components/diagrams/EscrowState.astro";
+import { TOKEN } from "../data/links";
+
+const toc = [
+  { label: "Bounty object", anchor: "bounty-object" },
+  { label: "Submission object", anchor: "submission-object" },
+  { label: "Review decision object", anchor: "review-object" },
+  { label: "Reviewer profile", anchor: "reviewer-profile" },
+  { label: "Escrow state machine", anchor: "escrow-states" },
+  { label: "Roles and permissions", anchor: "roles" },
+  { label: "Token facts", anchor: "token" },
+];
+---
+<DocsLayout
+  title="Reference"
+  description="Exact fields, schemas, states, and roles. Neutral, structured, parsable."
+  toc={toc}
+  eyebrow="Reference"
+>
+  <p class="lead">
+    Reference is intentionally dry. Fields, types, validation. No persuasion.
+    No origin story. Field shapes here are subject to change while the system
+    is preview, but the names are stable enough to design against.
+  </p>
+  <p>
+    For a plain-English overview of the same concepts, see the
+    <a href="/faq">Plain-English FAQ</a>.
+  </p>
+
+  <h2 id="bounty-object">Bounty object</h2>
+  <table>
+    <thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>id</code></td><td>string</td><td>yes</td><td>Unique bounty identifier.</td></tr>
+      <tr><td><code>sponsor</code></td><td>address</td><td>yes</td><td>Funding wallet on Base.</td></tr>
+      <tr><td><code>title</code></td><td>string</td><td>yes</td><td>Short, human-readable.</td></tr>
+      <tr><td><code>spec</code></td><td>markdown</td><td>yes</td><td>Task spec including acceptance criteria.</td></tr>
+      <tr><td><code>payout_max</code></td><td>uint256</td><td>yes</td><td>Max USDC payable for accepted work.</td></tr>
+      <tr><td><code>review_window</code></td><td>duration</td><td>yes</td><td>Time reviewer has to verdict.</td></tr>
+      <tr><td><code>challenge_window</code></td><td>duration</td><td>yes</td><td>Time before settlement is final.</td></tr>
+      <tr><td><code>state</code></td><td>enum</td><td>yes</td><td>See escrow state machine.</td></tr>
+      <tr><td><code>evidence_anchor</code></td><td>hash</td><td>no</td><td>Hash of offchain evidence bundle.</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="submission-object">Submission object</h2>
+  <table>
+    <thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>id</code></td><td>string</td><td>yes</td><td>Unique submission identifier.</td></tr>
+      <tr><td><code>bounty_id</code></td><td>string</td><td>yes</td><td>Bounty this submission targets.</td></tr>
+      <tr><td><code>submitter</code></td><td>address</td><td>yes</td><td>Wallet that signed the submission.</td></tr>
+      <tr><td><code>artifact</code></td><td>uri + hash</td><td>yes</td><td>Patch, script, repro, file.</td></tr>
+      <tr><td><code>evidence</code></td><td>uri + hash</td><td>yes</td><td>Repro steps, logs, environment.</td></tr>
+      <tr><td><code>submitted_at</code></td><td>timestamp</td><td>yes</td><td>Submission time.</td></tr>
+      <tr><td><code>status</code></td><td>enum</td><td>yes</td><td>queued, reviewed, accepted, rejected, disputed.</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="review-object">Review decision object</h2>
+  <table>
+    <thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>id</code></td><td>string</td><td>yes</td><td>Unique review identifier.</td></tr>
+      <tr><td><code>submission_id</code></td><td>string</td><td>yes</td><td>Submission this review applies to.</td></tr>
+      <tr><td><code>reviewer</code></td><td>address</td><td>yes</td><td>Admitted reviewer wallet.</td></tr>
+      <tr><td><code>verdict</code></td><td>enum</td><td>yes</td><td>accept, reject, dispute.</td></tr>
+      <tr><td><code>citations</code></td><td>uri + hash[]</td><td>yes</td><td>Evidence checked.</td></tr>
+      <tr><td><code>signature</code></td><td>signature</td><td>yes</td><td>Reviewer signature over the verdict.</td></tr>
+      <tr><td><code>decided_at</code></td><td>timestamp</td><td>yes</td><td>When the verdict was signed.</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="reviewer-profile">Reviewer profile</h2>
+  <table>
+    <thead><tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>id</code></td><td>string</td><td>yes</td><td>Reviewer identifier.</td></tr>
+      <tr><td><code>address</code></td><td>address</td><td>yes</td><td>Reviewer wallet on Base.</td></tr>
+      <tr><td><code>admitted_at</code></td><td>timestamp</td><td>yes</td><td>Admission timestamp.</td></tr>
+      <tr><td><code>bond</code></td><td>uint256</td><td>yes</td><td>BOUNTY bonded.</td></tr>
+      <tr><td><code>category_limits</code></td><td>map</td><td>no</td><td>Per-category payout caps.</td></tr>
+      <tr><td><code>history</code></td><td>list</td><td>no</td><td>Past verdicts, challenge outcomes.</td></tr>
+      <tr><td><code>status</code></td><td>enum</td><td>yes</td><td>active, paused, removed.</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="escrow-states">Escrow state machine</h2>
+  <EscrowState />
+  <ul>
+    <li><code>Draft</code> — created but not funded.</li>
+    <li><code>Funded</code> — USDC locked.</li>
+    <li><code>In review</code> — submissions being evaluated.</li>
+    <li><code>Queued</code> — verdict signed, challenge window open.</li>
+    <li><code>Settled</code> — challenge window passed, payout finalized.</li>
+    <li><code>Claimed</code> — USDC transferred to submitter.</li>
+    <li><code>Disputed</code> — contested verdict, escalation path engaged.</li>
+    <li><code>Refunded</code> — bounty closed without paid submission.</li>
+  </ul>
+
+  <h2 id="roles">Roles and permissions</h2>
+  <div class="kv">
+    <div><div class="k">Sponsor</div><div class="v">Create, fund, cancel before funded, close after refund window.</div></div>
+    <div><div class="k">Submitter</div><div class="v">Submit, withdraw before review starts, claim after settle.</div></div>
+    <div><div class="k">Reviewer</div><div class="v">Verdict, sign, escalate within review window.</div></div>
+    <div><div class="k">Protocol</div><div class="v">Hold escrow, enforce state transitions, expose proof.</div></div>
+  </div>
+
+  <h2 id="token">Token facts</h2>
+  <div class="kv">
+    <div><div class="k">Symbol</div><div class="v">{TOKEN.symbol}</div></div>
+    <div><div class="k">Network</div><div class="v">{TOKEN.network}</div></div>
+    <div><div class="k">Address</div><div class="v"><code>{TOKEN.address}</code></div></div>
+    <div><div class="k">Role</div><div class="v">Reviewer bonding. Not a payment unit. Not a governance token by default.</div></div>
+    <div><div class="k">Pool</div><div class="v"><a href={TOKEN.poolUrl} target="_blank" rel="noopener noreferrer">DEX Screener →</a></div></div>
+  </div>
+  <p>
+    More on the BOUNTY role in <a href="/token">/token</a> and
+    <a href="/explain">/explain</a>.
+  </p>
+</DocsLayout>

@@ -1,0 +1,51 @@
+---
+import DocsLayout from "../layouts/DocsLayout.astro";
+import { PROTOCOL_LINKS, DOCS_LINKS, CONTACT_LINKS, LEGAL_LINKS } from "../data/links";
+
+const toc = [
+  { label: "Protocol", anchor: "protocol" },
+  { label: "Docs", anchor: "docs" },
+  { label: "Community", anchor: "community" },
+  { label: "Legal", anchor: "legal" },
+  { label: "Machine-readable", anchor: "machine" },
+];
+---
+<DocsLayout
+  title="Site map"
+  description="Human-readable map of every public page on the AgentBounty site."
+  toc={toc}
+  eyebrow="Sitemap"
+>
+  <p class="lead">
+    Every public route on the site, grouped by intent. The machine-readable
+    version is at <a href="/sitemap-index.xml">/sitemap-index.xml</a>.
+  </p>
+
+  <h2 id="protocol">Protocol</h2>
+  <ul>{PROTOCOL_LINKS.map((l) => <li><a href={l.href}>{l.label}</a></li>)}</ul>
+
+  <h2 id="docs">Docs</h2>
+  <ul>{DOCS_LINKS.map((l) => <li><a href={l.href}>{l.label}</a></li>)}</ul>
+
+  <h2 id="community">Community</h2>
+  <ul>
+    {CONTACT_LINKS.map((l) => (
+      <li>
+        <a href={l.href} target="_blank" rel="noopener noreferrer">{l.label}</a>
+      </li>
+    ))}
+  </ul>
+
+  <h2 id="legal">Legal</h2>
+  <ul>{LEGAL_LINKS.map((l) => <li><a href={l.href}>{l.label}</a></li>)}</ul>
+
+  <h2 id="machine">Machine-readable</h2>
+  <ul>
+    <li><a href="/sitemap-index.xml">/sitemap-index.xml</a></li>
+    <li><a href="/llms.txt">/llms.txt</a></li>
+    <li><a href="/llms-full.txt">/llms-full.txt</a></li>
+    <li><a href="/site-index.json">/site-index.json</a></li>
+    <li><a href="/rss/devlog.xml">/rss/devlog.xml</a></li>
+    <li><a href="/rss/blog.xml">/rss/blog.xml</a></li>
+  </ul>
+</DocsLayout>

@@ -1,0 +1,19 @@
+---
+export interface Props {
+  num: string;
+  title: string;
+  caption?: string;
+}
+
+const { num, title, caption } = Astro.props;
+---
+<figure class="figure" role="figure" aria-label={title}>
+  <div class="figure-head">
+    <span class="figure-num">Figure {num}</span>
+    <span class="figure-title">{title}</span>
+  </div>
+  <div class="figure-body">
+    <slot />
+  </div>
+  {caption ? <figcaption class="figure-caption">{caption}</figcaption> : null}
+</figure>
