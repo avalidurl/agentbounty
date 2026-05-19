@@ -1,0 +1,10 @@
+{
+  "name": "agentbounty",
+  "version": "0.0.0-placeholder",
+  "private": true,
+  "description": "Website for the AgentBounty project.",
+  "scripts": {
+    "build": "rm -rf dist && mkdir -p dist && cp index.html styles.css dist/",
+    "preview": "python3 -m http.server 4173 -d dist"
+  }
+}
