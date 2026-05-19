@@ -24,13 +24,7 @@ body {
 }
 
 .panel,
-.form-panel {
-  border: 1px solid var(--line);
-  background: var(--panel);
-  padding: clamp(24px, 5vw, 56px);
-}
 
-.panel { margin-bottom: 16px; }
 
 .eyebrow {
   margin: 0 0 18px;
@@ -85,8 +79,8 @@ h2 {
 
 .button:hover { background: var(--ink); color: var(--panel); }
 
-iframe {
-  display: block;
-  border: 1px solid var(--line);
-  background: #fff;
+.external-note {
+  margin: 16px 0 0;
+  color: var(--muted);
+  font-size: 13px;
 }
