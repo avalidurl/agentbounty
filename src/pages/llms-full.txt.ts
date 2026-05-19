@@ -105,6 +105,7 @@ Routes:
 - ${SITE.url}/start           Tutorial
 - ${SITE.url}/guides          How-to
 - ${SITE.url}/reference       Fields, schemas, states
+- ${SITE.url}/faq             Plain-English FAQ (simple reference)
 - ${SITE.url}/explain         Design rationale
 - ${SITE.url}/roadmap         Maturity map
 - ${SITE.url}/status          Preview vs live boundary

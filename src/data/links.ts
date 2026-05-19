@@ -126,6 +126,7 @@ export const DOCS_LINKS: NavLink[] = [
   { label: "Start here", href: "/start" },
   { label: "Guides", href: "/guides" },
   { label: "Reference", href: "/reference" },
+  { label: "Plain-English FAQ", href: "/faq" },
   { label: "Explanation", href: "/explain" },
   { label: "Devlog", href: "/devlog" },
   { label: "Blog", href: "/blog" },

@@ -25,6 +25,7 @@ ${SITE.description}
 - ${SITE.url}/start           First guided encounter (tutorial)
 - ${SITE.url}/guides          How-to procedures for sponsors, submitters, reviewers
 - ${SITE.url}/reference       Fields, schemas, states, roles
+- ${SITE.url}/faq             Plain-English FAQ (simple reference)
 - ${SITE.url}/explain         Design rationale and tradeoffs
 - ${SITE.url}/roadmap         Public maturity map (v0.0 -> v1.0)
 - ${SITE.url}/status          Preview vs live boundary

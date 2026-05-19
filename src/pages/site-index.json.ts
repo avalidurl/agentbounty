@@ -27,6 +27,7 @@ export const GET = () => {
       start: "/start",
       guides: "/guides",
       reference: "/reference",
+      faq: "/faq",
       explain: "/explain",
       roadmap: "/roadmap",
       status: "/status",
