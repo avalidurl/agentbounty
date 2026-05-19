@@ -23,8 +23,11 @@ body {
   padding: 56px 0;
 }
 
-.panel,
-
+.panel {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  padding: clamp(24px, 5vw, 56px);
+}
 
 .eyebrow {
   margin: 0 0 18px;
