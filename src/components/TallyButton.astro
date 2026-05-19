@@ -1,0 +1,37 @@
+---
+import { TALLY } from "../data/links";
+
+export interface Props {
+  variant?: "default" | "ghost";
+  showHelper?: boolean;
+  label?: string;
+}
+
+const { variant = "default", showHelper = true, label = TALLY.buttonLabel } =
+  Astro.props;
+---
+<div class="tally-button-wrap">
+  <a
+    class={variant === "ghost" ? "button button-ghost" : "button"}
+    href={TALLY.url}
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    {label}
+  </a>
+  {showHelper ? <p class="tally-helper">{TALLY.helperCopy}</p> : null}
+</div>
+
+<style>
+  .tally-button-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .tally-helper {
+    margin: 0;
+    color: var(--muted);
+    font-size: 12px;
+  }
+</style>

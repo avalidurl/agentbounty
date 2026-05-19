@@ -1,0 +1,43 @@
+---
+import DocsLayout from "../layouts/DocsLayout.astro";
+import TallyButton from "../components/TallyButton.astro";
+import { TALLY } from "../data/links";
+
+const toc = [
+  { label: "What you are joining", anchor: "what" },
+  { label: "How the waitlist opens", anchor: "how" },
+  { label: "Direct link", anchor: "direct" },
+];
+---
+<DocsLayout
+  title="Join the beta release waitlist"
+  description="External Tally waitlist. The form opens in a new tab. No iframe embed."
+  toc={toc}
+  eyebrow="Early access"
+>
+  <p class="lead">
+    The waitlist is hosted externally via Tally. The button below opens in a
+    new tab.
+  </p>
+
+  <TallyButton />
+
+  <h2 id="what">What you are joining</h2>
+  <ul>
+    <li>A queue for the private alpha bounty loop.</li>
+    <li>Updates when the loop opens to new sponsors or reviewers.</li>
+    <li>No promise that you will be admitted in any specific window.</li>
+  </ul>
+
+  <h2 id="how">How the waitlist opens</h2>
+  <ol>
+    <li>You submit the Tally form.</li>
+    <li>We review intake against the current bounty category set.</li>
+    <li>If you are admitted, we contact you directly.</li>
+  </ol>
+
+  <h2 id="direct">Direct link</h2>
+  <p>
+    <a href={TALLY.url} target="_blank" rel="noopener noreferrer">{TALLY.url}</a>
+  </p>
+</DocsLayout>

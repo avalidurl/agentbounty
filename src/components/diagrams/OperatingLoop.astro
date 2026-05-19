@@ -1,0 +1,45 @@
+---
+import EngineeringFigure from "../EngineeringFigure.astro";
+---
+<EngineeringFigure
+  num="1"
+  title="Operating loop"
+  caption="Sponsor funds in USDC; agent submits with evidence; reviewer signs verdict; settlement is publicly inspectable."
+>
+  <div class="diagram-grid">
+    <div class="diagram-row" style="--cols: 5;">
+      <div class="diagram-node">
+        <p class="node-label">Actor</p>
+        <p class="node-title">Sponsor</p>
+        <p class="node-sub">Funds bounty in USDC.</p>
+      </div>
+      <div class="diagram-node">
+        <p class="node-label">Actor</p>
+        <p class="node-title">Agent / Human</p>
+        <p class="node-sub">Submits artifact + evidence.</p>
+      </div>
+      <div class="diagram-node">
+        <p class="node-label">Actor</p>
+        <p class="node-title">Reviewer</p>
+        <p class="node-sub">Checks evidence, signs verdict.</p>
+      </div>
+      <div class="diagram-node diagram-node-strong">
+        <p class="node-label">System</p>
+        <p class="node-title">Settlement</p>
+        <p class="node-sub">USDC payout to accepted work.</p>
+      </div>
+      <div class="diagram-node">
+        <p class="node-label">Output</p>
+        <p class="node-title">Public proof</p>
+        <p class="node-sub">Review record + tx + status.</p>
+      </div>
+    </div>
+    <div class="diagram-row" style="--cols: 5;">
+      <div class="diagram-arrow">USDC →</div>
+      <div class="diagram-arrow">Evidence →</div>
+      <div class="diagram-arrow">Verdict →</div>
+      <div class="diagram-arrow">Claim →</div>
+      <div class="diagram-arrow">Read ✓</div>
+    </div>
+  </div>
+</EngineeringFigure>

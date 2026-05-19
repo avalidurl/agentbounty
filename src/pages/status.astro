@@ -1,0 +1,68 @@
+---
+import DocsLayout from "../layouts/DocsLayout.astro";
+import { TOKEN } from "../data/links";
+
+const toc = [
+  { label: "Deployment", anchor: "deployment" },
+  { label: "Live surfaces", anchor: "live" },
+  { label: "Preview surfaces", anchor: "preview" },
+  { label: "Known limits", anchor: "limits" },
+  { label: "Security posture", anchor: "security" },
+  { label: "Recent changes", anchor: "changes" },
+];
+---
+<DocsLayout
+  title="Status"
+  description="Make the preview/live boundary explicit. If something is mock, label it mock."
+  toc={toc}
+  eyebrow="Status"
+>
+  <p class="lead">
+    The product is preview. The website is real. The bounty loop is not yet
+    open. This page exists to make that boundary explicit.
+  </p>
+
+  <h2 id="deployment">Deployment</h2>
+  <div class="kv">
+    <div><div class="k">Site</div><div class="v">https://agentbounty.dev (Cloudflare Pages)</div></div>
+    <div><div class="k">Network</div><div class="v">{TOKEN.network}</div></div>
+    <div><div class="k">Token</div><div class="v">{TOKEN.symbol} (<code>{TOKEN.address}</code>)</div></div>
+    <div><div class="k">Bounty contracts</div><div class="v">Not deployed yet.</div></div>
+    <div><div class="k">Intake</div><div class="v">Tally beta waitlist.</div></div>
+  </div>
+
+  <h2 id="live">Live surfaces</h2>
+  <ul>
+    <li>This website and its documentation.</li>
+    <li>Beta waitlist via Tally.</li>
+    <li>BOUNTY token on Base.</li>
+  </ul>
+
+  <h2 id="preview">Preview surfaces</h2>
+  <ul>
+    <li>All bounty, submission, reviewer, and settlement examples in docs.</li>
+    <li>All schema illustrations in reference.</li>
+    <li>All payout proof samples.</li>
+  </ul>
+
+  <h2 id="limits">Known limits</h2>
+  <ul>
+    <li>No live bounty loop yet.</li>
+    <li>Reviewer admission process is offline.</li>
+    <li>Dispute and challenge flows are spec only.</li>
+  </ul>
+
+  <h2 id="security">Security posture</h2>
+  <ul>
+    <li>USDC escrow design is being scoped against an audited primitive.</li>
+    <li>Reviewer authority is constrained by admission, BOUNTY bond, signed verdicts, and public history.</li>
+    <li>Cloudflare security and header policy is handled outside this repo.</li>
+  </ul>
+
+  <h2 id="changes">Recent changes</h2>
+  <ul>
+    <li>Site moved from a single-page placeholder to a documentation/roadmap site.</li>
+    <li>Public beta waitlist opened.</li>
+  </ul>
+  <p>For ongoing change records, see <a href="/devlog">/devlog</a>.</p>
+</DocsLayout>

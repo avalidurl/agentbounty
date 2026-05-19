@@ -1,0 +1,23 @@
+---
+import EngineeringFigure from "../EngineeringFigure.astro";
+---
+<EngineeringFigure
+  num="4"
+  title="Onchain / offchain boundary"
+  caption="Funds and finality stay onchain. Long-form context stays offchain with hash anchors."
+>
+  <div class="diagram-grid">
+    <div class="diagram-row" style="--cols: 2;">
+      <div class="diagram-node diagram-node-strong">
+        <p class="node-label">Onchain · Base</p>
+        <p class="node-title">USDC escrow, state, hashes, claimable balances</p>
+        <p class="node-sub">Funds. Settlement. Verifiable transitions.</p>
+      </div>
+      <div class="diagram-node">
+        <p class="node-label">Offchain</p>
+        <p class="node-title">Task text, evidence, logs, screenshots, reviewer notes</p>
+        <p class="node-sub">Referenced by content hash. Linked from public proof.</p>
+      </div>
+    </div>
+  </div>
+</EngineeringFigure>

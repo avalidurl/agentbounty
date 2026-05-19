@@ -1,0 +1,33 @@
+---
+export interface Props {
+  status?: "preview" | "alpha" | "live";
+}
+
+const { status = "preview" } = Astro.props;
+
+const copy = {
+  preview: "Preview · MVP under construction · Public roadmap and docs.",
+  alpha: "Private alpha · Curated participants only.",
+  live: "Live · Real bounties and payouts.",
+} as const;
+
+const label = copy[status];
+---
+<style>
+  .status-banner {
+    border-bottom: 1px solid var(--line);
+    background: var(--panel);
+    padding: var(--space-2) 0;
+  }
+  .status-banner-inner {
+    width: min(var(--max-content), calc(100vw - 32px));
+    margin: 0 auto;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+</style>
+<div class="status-banner" role="status" aria-live="polite">
+  <div class="status-banner-inner">{label}</div>
+</div>

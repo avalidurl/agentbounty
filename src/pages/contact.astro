@@ -1,0 +1,48 @@
+---
+import DocsLayout from "../layouts/DocsLayout.astro";
+import TallyButton from "../components/TallyButton.astro";
+import { CONTACT_LINKS } from "../data/links";
+
+const toc = [
+  { label: "Contact channels", anchor: "channels" },
+  { label: "Beta waitlist", anchor: "waitlist" },
+  { label: "What these are", anchor: "what" },
+];
+---
+<DocsLayout
+  title="Contact"
+  description="Public contact channels. Discovery only. None of these is the product platform."
+  toc={toc}
+  eyebrow="Contact"
+>
+  <p class="lead">
+    These are contact and discovery surfaces. None of them is the canonical
+    product platform.
+  </p>
+
+  <h2 id="channels">Contact channels</h2>
+  <table>
+    <thead><tr><th>Surface</th><th>URL</th><th>Notes</th></tr></thead>
+    <tbody>
+      {CONTACT_LINKS.map((c) => (
+        <tr>
+          <td>{c.label}</td>
+          <td>
+            <a href={c.href} target="_blank" rel="noopener noreferrer">{c.href}</a>
+          </td>
+          <td>{c.description}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+
+  <h2 id="waitlist">Beta waitlist</h2>
+  <TallyButton />
+
+  <h2 id="what">What these are</h2>
+  <ul>
+    <li>Discovery and conversation surfaces.</li>
+    <li>Not the bounty loop.</li>
+    <li>Not the reviewer admission channel.</li>
+  </ul>
+</DocsLayout>

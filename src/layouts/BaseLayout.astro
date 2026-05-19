@@ -1,0 +1,65 @@
+---
+import "../styles/base.css";
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import { SITE, FEEDS } from "../data/links";
+
+export interface Props {
+  title?: string;
+  description?: string;
+  canonical?: string;
+  preview?: boolean;
+}
+
+const {
+  title = SITE.name,
+  description = SITE.description,
+  canonical,
+  preview = true,
+} = Astro.props;
+
+const fullTitle =
+  title === SITE.name ? `${SITE.name} — ${SITE.tagline}` : `${title} — ${SITE.name}`;
+const canonicalUrl = canonical
+  ? new URL(canonical, SITE.url).toString()
+  : new URL(Astro.url.pathname, SITE.url).toString();
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="AgentBounty Devlog"
+      href={FEEDS.devlog}
+    />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="AgentBounty Blog"
+      href={FEEDS.blog}
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta name="twitter:card" content="summary" />
+    {preview ? <meta name="robots" content="index, follow" /> : null}
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <SiteHeader />
+    <main id="main" class="shell">
+      <slot />
+    </main>
+    <SiteFooter />
+  </body>
+</html>
