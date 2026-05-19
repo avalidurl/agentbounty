@@ -6,6 +6,7 @@
 .docs-main {
   min-width: 0;
   max-width: var(--read-width);
+  margin: 0 auto;
 }
 
 .page-toc {

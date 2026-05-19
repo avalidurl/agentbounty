@@ -53,6 +53,16 @@ const canonicalUrl = canonical
     <meta property="og:site_name" content={SITE.name} />
     <meta name="twitter:card" content="summary" />
     {preview ? <meta name="robots" content="index, follow" /> : null}
+    <script is:inline>
+      (function () {
+        try {
+          var stored = localStorage.getItem("agentbounty-theme");
+          if (stored === "dark" || stored === "light") {
+            document.documentElement.setAttribute("data-theme", stored);
+          }
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
