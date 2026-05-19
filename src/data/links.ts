@@ -43,7 +43,12 @@ export const TOP_NAV: NavLink[] = [
   { label: "Community", href: "/community" },
 ];
 
-export type CommunityGroupKey = "chat" | "broadcast" | "writing" | "waitlist";
+export type CommunityGroupKey =
+  | "chat"
+  | "broadcast"
+  | "writing"
+  | "code"
+  | "waitlist";
 
 export type CommunityChannel = NavLink & {
   group: CommunityGroupKey;
@@ -100,6 +105,14 @@ export const COMMUNITY_CHANNELS: CommunityChannel[] = [
     description: "Longer-form writing.",
   },
   {
+    label: "GitHub / founder",
+    href: "https://github.com/avalidurl",
+    external: true,
+    group: "code",
+    cadence: "Code",
+    description: "Founder GitHub. Source for related work and experiments.",
+  },
+  {
     label: "Beta waitlist (Tally)",
     href: "https://tally.so/r/68Wy4O",
     external: true,
@@ -113,6 +126,7 @@ export const COMMUNITY_GROUP_LABELS: Record<CommunityGroupKey, string> = {
   chat: "Chat",
   broadcast: "Broadcast",
   writing: "Long-form writing",
+  code: "Code",
   waitlist: "Waitlist",
 };
 
@@ -174,6 +188,12 @@ export const CONTACT_LINKS: NavLink[] = [
     href: "https://gokhan.substack.com",
     external: true,
     description: "Longer-form writing.",
+  },
+  {
+    label: "GitHub / founder",
+    href: "https://github.com/avalidurl",
+    external: true,
+    description: "Founder GitHub. Source for related work and experiments.",
   },
   {
     label: "DEX Screener",

@@ -8,7 +8,13 @@ import {
 } from "../data/links";
 import type { CommunityGroupKey } from "../data/links";
 
-const order: CommunityGroupKey[] = ["chat", "broadcast", "writing", "waitlist"];
+const order: CommunityGroupKey[] = [
+  "chat",
+  "broadcast",
+  "writing",
+  "code",
+  "waitlist",
+];
 
 const grouped = order.map((key) => ({
   key,
@@ -20,6 +26,7 @@ const toc = [
   { label: "Chat", anchor: "chat" },
   { label: "Broadcast", anchor: "broadcast" },
   { label: "Long-form writing", anchor: "writing" },
+  { label: "Code", anchor: "code" },
   { label: "Waitlist", anchor: "waitlist" },
   { label: "What these are not", anchor: "not" },
 ];
