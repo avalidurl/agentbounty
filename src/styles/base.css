@@ -132,6 +132,7 @@ table {
   border-collapse: collapse;
   border: 1px solid var(--line);
   font-size: 14px;
+  table-layout: fixed;
 }
 
 th,
@@ -140,6 +141,8 @@ td {
   padding: var(--space-2) var(--space-3);
   text-align: left;
   vertical-align: top;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 th {

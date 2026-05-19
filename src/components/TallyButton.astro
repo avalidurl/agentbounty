@@ -19,7 +19,16 @@ const { variant = "default", showHelper = true, label = TALLY.buttonLabel } =
   >
     {label}
   </a>
-  {showHelper ? <p class="tally-helper">{TALLY.helperCopy}</p> : null}
+  {showHelper ? (
+    <div class="tally-helpers">
+      <p class="tally-helper">{TALLY.helperCopy}</p>
+      <p class="tally-helper tally-helper-sanctions">
+        By joining the waitlist, you confirm that you are not located in a
+        restricted jurisdiction and are not subject to applicable sanctions
+        restrictions.
+      </p>
+    </div>
+  ) : null}
 </div>
 
 <style>
@@ -29,9 +38,21 @@ const { variant = "default", showHelper = true, label = TALLY.buttonLabel } =
     align-items: center;
     gap: var(--space-3);
   }
+  .tally-helpers {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+    flex: 1 1 280px;
+  }
   .tally-helper {
     margin: 0;
     color: var(--muted);
     font-size: 12px;
+    line-height: 1.45;
+  }
+  .tally-helper-sanctions {
+    font-size: 11px;
+    max-width: 60ch;
   }
 </style>
