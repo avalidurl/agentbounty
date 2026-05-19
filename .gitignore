@@ -43,3 +43,6 @@ Thumbs.db
 .cache/
 .tmp/
 tmp/
+
+# local Cloudflare token
+.cf-token
