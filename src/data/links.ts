@@ -37,7 +37,82 @@ export const TOP_NAV: NavLink[] = [
   { label: "Reference", href: "/reference" },
   { label: "Roadmap", href: "/roadmap" },
   { label: "Status", href: "/status" },
+  { label: "Token", href: "/token" },
+  { label: "Community", href: "/community" },
 ];
+
+export type CommunityGroupKey = "chat" | "broadcast" | "writing" | "waitlist";
+
+export type CommunityChannel = NavLink & {
+  group: CommunityGroupKey;
+  cadence?: string;
+};
+
+export const COMMUNITY_CHANNELS: CommunityChannel[] = [
+  {
+    label: "Telegram",
+    href: "https://t.me/agent_bounty",
+    external: true,
+    group: "chat",
+    cadence: "Live chat",
+    description: "Community chat. Lowest-latency surface for questions.",
+  },
+  {
+    label: "Discord",
+    href: "https://discord.gg/UXKq4xGpn5",
+    external: true,
+    group: "chat",
+    cadence: "Live chat",
+    description: "Community chat. Channels for sponsors, submitters, reviewers.",
+  },
+  {
+    label: "X / project",
+    href: "https://x.com/agentbountydev",
+    external: true,
+    group: "broadcast",
+    cadence: "Broadcast",
+    description: "Project announcements.",
+  },
+  {
+    label: "X / founder",
+    href: "https://x.com/goekhan",
+    external: true,
+    group: "broadcast",
+    cadence: "Broadcast",
+    description: "Founder updates and project context.",
+  },
+  {
+    label: "Farcaster",
+    href: "https://farcaster.xyz/gokhan",
+    external: true,
+    group: "broadcast",
+    cadence: "Optional",
+    description: "Optional distribution channel only. Not the product platform.",
+  },
+  {
+    label: "Substack",
+    href: "https://gokhan.substack.com",
+    external: true,
+    group: "writing",
+    cadence: "Long-form",
+    description: "Longer-form writing.",
+  },
+  {
+    label: "Beta waitlist (Tally)",
+    href: "https://tally.so/r/68Wy4O",
+    external: true,
+    group: "waitlist",
+    cadence: "Form",
+    description: "External Tally form. Opens in a new tab.",
+  },
+];
+
+export const COMMUNITY_GROUP_LABELS: Record<CommunityGroupKey, string> = {
+  chat: "Chat",
+  broadcast: "Broadcast",
+  writing: "Long-form writing",
+  waitlist: "Waitlist",
+};
 
 export const PROTOCOL_LINKS: NavLink[] = [
   { label: "Overview", href: "/" },

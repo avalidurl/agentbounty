@@ -1,0 +1,85 @@
+---
+import DocsLayout from "../layouts/DocsLayout.astro";
+import TallyButton from "../components/TallyButton.astro";
+import {
+  COMMUNITY_CHANNELS,
+  COMMUNITY_GROUP_LABELS,
+  TALLY,
+} from "../data/links";
+import type { CommunityGroupKey } from "../data/links";
+
+const order: CommunityGroupKey[] = ["chat", "broadcast", "writing", "waitlist"];
+
+const grouped = order.map((key) => ({
+  key,
+  label: COMMUNITY_GROUP_LABELS[key],
+  channels: COMMUNITY_CHANNELS.filter((c) => c.group === key),
+}));
+
+const toc = [
+  { label: "Chat", anchor: "chat" },
+  { label: "Broadcast", anchor: "broadcast" },
+  { label: "Long-form writing", anchor: "writing" },
+  { label: "Waitlist", anchor: "waitlist" },
+  { label: "What these are not", anchor: "not" },
+];
+---
+<DocsLayout
+  title="Community"
+  description="Community channels for AgentBounty. Chat, broadcast, and long-form writing surfaces. None of these is the product platform."
+  toc={toc}
+  eyebrow="Community"
+>
+  <p class="lead">
+    Community surfaces are for conversation, questions, and updates. None of
+    them is the product platform. The bounty loop runs through the website
+    and the curated alpha intake.
+  </p>
+
+  {grouped.map((g) => (
+    <section>
+      <h2 id={g.key}>{g.label}</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 30%;">Surface</th>
+            <th style="width: 25%;">Cadence</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          {g.channels.map((c) => (
+            <tr>
+              <td>
+                <a href={c.href} target="_blank" rel="noopener noreferrer">
+                  {c.label}
+                </a>
+              </td>
+              <td>{c.cadence}</td>
+              <td>{c.description}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </section>
+  ))}
+
+  <section>
+    <h2 id="waitlist-cta">Join the beta release waitlist</h2>
+    <p>
+      The waitlist is the only intake path. It is an external Tally form at
+      <a href={TALLY.url} target="_blank" rel="noopener noreferrer">{TALLY.url}</a>.
+    </p>
+    <TallyButton />
+  </section>
+
+  <section>
+    <h2 id="not">What these are not</h2>
+    <ul>
+      <li>They are not the bounty loop.</li>
+      <li>They are not the reviewer admission channel.</li>
+      <li>They are not authoritative for product roadmap or status; see <a href="/roadmap">Roadmap</a> and <a href="/status">Status</a>.</li>
+      <li>Farcaster is one optional distribution channel only. It is not the canonical product platform.</li>
+    </ul>
+  </section>
+</DocsLayout>

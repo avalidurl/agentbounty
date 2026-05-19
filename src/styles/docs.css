@@ -1,9 +1,6 @@
 .docs-shell {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 280px;
-  gap: var(--space-7);
+  display: block;
   padding: var(--space-6) 0 var(--space-8);
-  align-items: start;
 }
 
 .docs-main {
@@ -11,70 +8,62 @@
   max-width: var(--read-width);
 }
 
-.docs-rail {
-  position: sticky;
-  top: var(--space-5);
+.page-toc {
+  margin: 0 0 var(--space-6);
+  padding: var(--space-3) var(--space-4);
   border: 1px solid var(--line);
   background: var(--panel);
-  padding: var(--space-4);
   font-size: 13px;
   line-height: 1.5;
 }
 
-.docs-rail h4 {
+.page-toc-label {
+  display: block;
   margin: 0 0 var(--space-2);
   text-transform: uppercase;
   letter-spacing: 0.12em;
   font-size: 11px;
   color: var(--muted);
   font-weight: 700;
-  border-bottom: 1px solid var(--line);
-  padding-bottom: var(--space-2);
 }
 
-.docs-rail ul {
+.page-toc ul {
   list-style: none;
-  margin: 0 0 var(--space-4);
-  padding: 0;
-}
-
-.docs-rail li {
   margin: 0;
-  padding: 2px 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-5);
 }
 
-.docs-rail a {
+.page-toc li {
+  margin: 0;
+}
+
+.page-toc a {
   color: var(--ink);
   text-decoration: none;
-  display: block;
-  padding: 2px 0;
+  border-bottom: 1px solid transparent;
 }
 
-.docs-rail a:hover {
-  text-decoration: underline;
+.page-toc a:hover {
+  border-bottom-color: var(--ink);
 }
 
-.docs-rail .rail-section {
-  margin-bottom: var(--space-5);
-}
-
-.docs-rail .rail-cta {
-  margin-bottom: var(--space-5);
-}
-
-.docs-rail .rail-cta .button {
-  display: flex;
+.docs-main table {
+  table-layout: fixed;
   width: 100%;
 }
 
-.docs-rail .rail-cta p {
-  margin: var(--space-2) 0 0;
-  color: var(--muted);
-  font-size: 12px;
+.docs-main th,
+.docs-main td {
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
-.docs-rail .rail-status {
-  margin-bottom: var(--space-5);
+.docs-main code {
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .lead {
@@ -208,15 +197,4 @@
   color: var(--panel);
 }
 
-@media (max-width: 960px) {
-  .docs-shell {
-    grid-template-columns: 1fr;
-  }
-  .docs-rail {
-    position: static;
-    order: 2;
-  }
-  .docs-main {
-    order: 1;
-  }
-}
+

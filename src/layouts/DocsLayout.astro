@@ -1,6 +1,5 @@
 ---
 import BaseLayout from "./BaseLayout.astro";
-import RightRail from "../components/RightRail.astro";
 import StatusBanner from "../components/StatusBanner.astro";
 import "../styles/docs.css";
 import "../styles/diagrams.css";
@@ -30,14 +29,21 @@ const {
 ---
 <BaseLayout title={title} description={description}>
   {showStatusBanner ? <StatusBanner status={status} /> : null}
-  <div class="docs-shell">
+  <div class="docs-shell shell">
     <article class="docs-main">
       {eyebrow ? <p class="eyebrow">{eyebrow}</p> : null}
       <h1>{title}</h1>
+      {toc.length > 0 ? (
+        <nav class="page-toc" aria-label="On this page">
+          <span class="page-toc-label">On this page</span>
+          <ul>
+            {toc.map((t) => (
+              <li><a href={`#${t.anchor}`}>{t.label}</a></li>
+            ))}
+          </ul>
+        </nav>
+      ) : null}
       <slot />
     </article>
-    <aside class="docs-rail" aria-label="Page table of contents and legal links">
-      <RightRail toc={toc} status={status} />
-    </aside>
   </div>
 </BaseLayout>
