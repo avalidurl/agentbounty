@@ -315,9 +315,9 @@ const toc = [
   <section class="shell section" id="gallery">
     <h2>Gallery</h2>
     <p>
-      All 100 plates. Each shows its title, token id, rarity tier, and its
-      permanent <code>ar://</code> address on Arweave. Click a plate to view it
-      on Basescan.
+      All 100 plates. Hover a thumbnail for its title, token id, rarity, and
+      permanent <code>ar://</code> address on Arweave; click to open it on the
+      marketplace.
     </p>
     <div class="gallery-controls">
       <label class="field-label" for="tier-filter">Filter by tier</label>
@@ -682,10 +682,26 @@ const toc = [
     /* Gallery + minted cards are injected by client-side JS, so Astro's scoped
        styles don't reach them — these MUST be global to actually apply. */
     .gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 16px;
+      display: grid !important;
+      grid-template-columns: repeat(auto-fill, minmax(116px, 1fr)) !important;
+      gap: 8px !important;
     }
+    .plate-thumb {
+      display: block;
+      border: 1px solid var(--line);
+      background: var(--panel-strong);
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+    }
+    .plate-thumb img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.15s ease;
+    }
+    .plate-thumb:hover { border-color: var(--ink); }
+    .plate-thumb:hover img { transform: scale(1.04); }
     .plate-card {
       border: 1px solid var(--line);
       background: var(--panel);
@@ -847,24 +863,13 @@ const toc = [
         var limited = showAll ? rows : rows.slice(0, INITIAL);
         var html = limited
           .map(function (p) {
+            var tip = "#" + p.id + " — " + p.title + " — " + p.rarity + " — " + arAddr(p.id);
             return (
-              '<article class="plate-card">' +
-              '<img class="plate-img" loading="lazy" width="300" height="300" ' +
-              'src="' + plateImg(p.id) + '" ' +
-              'alt="' + escapeHtml(p.title) + '" />' +
-              '<div class="plate-meta">' +
-              '<div class="plate-title">' + escapeHtml(p.title) + "</div>" +
-              '<div class="plate-row">' +
-              "<span>Token #" + p.id + "</span>" +
-              '<span class="tier-badge" data-tier="' + p.rarity + '">' + p.rarity + "</span>" +
-              "</div>" +
-              '<div class="plate-ar"><code>' + arAddr(p.id) + "</code></div>" +
-              '<div class="plate-row">' +
-              '<a href="' + plateImg(p.id) + '" target="_blank" rel="noopener noreferrer">View image ↗</a>' +
-              '<a href="' + OPENSEA_COLLECTION + "/" + p.id + '" target="_blank" rel="noopener noreferrer">Marketplace ↗</a>' +
-              "</div>" +
-              "</div>" +
-              "</article>"
+              '<a class="plate-thumb" href="' + OPENSEA_COLLECTION + "/" + p.id + '" ' +
+              'target="_blank" rel="noopener noreferrer" title="' + escapeHtml(tip) + '">' +
+              '<img loading="lazy" width="300" height="300" ' +
+              'src="' + plateImg(p.id) + '" alt="' + escapeHtml("Plate #" + p.id + " — " + p.title) + '" />' +
+              "</a>"
             );
           })
           .join("");
