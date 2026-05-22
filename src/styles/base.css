@@ -8,6 +8,7 @@
   --panel: #f7f4f0;
   --panel-strong: #faf8f5;
   --accent: #111111;
+  --accent-go: #2f7d32;
   --max-content: 1280px;
   --read-width: 72ch;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
@@ -34,6 +35,7 @@
   --panel: #161616;
   --panel-strong: #1f1f1f;
   --accent: #f0eee9;
+  --accent-go: #74c46a;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -47,6 +49,7 @@
     --panel: #161616;
     --panel-strong: #1f1f1f;
     --accent: #f0eee9;
+    --accent-go: #74c46a;
   }
 }
 
@@ -75,6 +78,7 @@ a {
 
 a:hover {
   text-decoration-thickness: 2px;
+  color: var(--accent-go);
 }
 
 h1,

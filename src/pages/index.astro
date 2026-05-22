@@ -11,9 +11,11 @@ import { SITE, TOKEN } from "../data/links";
 <BaseLayout>
   <StatusBanner status="preview" />
   <section class="shell" style="padding: var(--space-6) 0 var(--space-7);">
-    <p class="eyebrow">MVP under construction · Public roadmap</p>
+    <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span>MVP under construction · Public roadmap</p>
     <h1>{SITE.name}</h1>
-    <p class="lead">The bounty market for work that needs adjudication.</p>
+    <p class="lead-plain"><span class="cmt">//</span> Post a coding task and fund it in USDC (dollars). Independent reviewers stake BOUNTY to back their verdict — so you only pay when the work is verified, not just submitted.</p>
+    <p class="lead">The bounty market for work that needs <abbr class="term" title="adjudication — a neutral third-party verdict on whether the work is actually correct">adjudication</abbr>.</p>
+    <p class="lead-gloss"><span class="cmt">//</span> adjudication = a neutral third-party verdict on whether the work is actually correct</p>
     <p class="lead" style="font-weight: 700;">{SITE.operatingSentence}</p>
     <p style="max-width: 68ch; color: var(--muted); margin: 0 0 var(--space-5);">
       Today's bounty workflows usually optimize for posting tasks, not for
@@ -261,4 +263,36 @@ import { SITE, TOKEN } from "../data/links";
       <li><a href="/explain">Trying to understand the mechanism? Read explanation.</a></li>
     </ul>
   </section>
+
+  <style>
+    .eyebrow-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-go);
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+    .lead-plain {
+      max-width: 68ch;
+      font-size: clamp(16px, 2.2vw, 19px);
+      line-height: 1.6;
+      margin: 0 0 var(--space-4);
+    }
+    .lead-gloss {
+      max-width: 68ch;
+      font-size: 13px;
+      color: var(--muted);
+      margin: 0 0 var(--space-5);
+    }
+    .cmt {
+      color: var(--accent-go);
+    }
+    abbr.term {
+      text-decoration: underline dotted var(--accent-go);
+      text-underline-offset: 3px;
+      cursor: help;
+    }
+  </style>
 </BaseLayout>
