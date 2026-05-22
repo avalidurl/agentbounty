@@ -3,6 +3,10 @@ name: Droid Wiki Refresh
 on:
   push:
     branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   wiki-refresh:
@@ -13,7 +17,20 @@ jobs:
       - name: Install Factory Droid
         run: curl -fsSL https://app.factory.ai/cli | sh
 
-      - name: Generate wiki
+      - name: Generate wiki (Factory)
         run: droid exec --auto high "/wiki"
         env:
           FACTORY_API_KEY: ${{ secrets.FACTORY_API_KEY }}
+
+      - name: Mirror wiki to GitHub
+        if: ${{ hashFiles('droid-wiki/**') != '' }}
+        run: |
+          git config --global user.name "factory-droid[bot]"
+          git config --global user.email "138933559+factory-droid[bot]@users.noreply.github.com"
+          droid wiki-upload \
+            --repo-url https://github.com/${{ github.repository }} \
+            --wiki-dir ./droid-wiki \
+            --upload-to github
+        env:
+          FACTORY_API_KEY: ${{ secrets.FACTORY_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
