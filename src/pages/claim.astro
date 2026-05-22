@@ -1,0 +1,1411 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import StatusBanner from "../components/StatusBanner.astro";
+import "../styles/docs.css";
+
+// ---------------------------------------------------------------------------
+// Agent Bounty Plates — claim / gallery / marketplace page.
+//
+// The collection is LIVE on Base mainnet (chain id 8453).
+//   Contract: 0x536fDf3027ae6F34499B4452aFbD9E1B872f6Bd2
+//   ERC-721 "Agent Bounty Plates" / "PLATE", MAX_SUPPLY 100.
+//   Token 0 = genesis "Archive" (founder, 1/1).
+//
+// Eligibility = the largest 99 traders, committed as a Merkle root.
+//   Published list + per-address proofs live at /claim/eligible.json
+//   (shape: { published, merkleRoot, addresses:[...], proofs:{checksumAddr:[bytes32,...]} }).
+//
+// Plate art resolves at the Irys gateway; the permanent reference is ar://<tx>/<id>.png.
+// All title + rarity data is pre-baked into /claim/plates.json so the gallery
+// does not need 100 on-chain reads.
+//
+// Contract surface actually deployed (verified on-chain against 0x536f…6Bd2):
+//   claim(address to, bytes32[] proof) returns (uint256 requestId)
+//     -> emits ClaimRequested(claimant, recipient, requestId); the plate is minted
+//        ASYNCHRONOUSLY by Chainlink VRF, emitting PlateClaimed(recipient, tokenId, requestId).
+//   claimsOpen() (bool)              // contract's open flag
+//   claimDeadline() (uint256)        // 0 until opened; otherwise openTime + 5 days
+//   hasClaimed(address) (bool)
+//   remainingPlates() (uint256)      // community plates left
+//   MAX_SUPPLY() (uint256)
+//   tokenURI(uint256) (string), ownerOf(uint256) (address)
+//
+// NOTE: there is NO on-chain isEligible() — eligibility is checked client-side
+// against eligible.json and proven by passing the Merkle proof to claim().
+// ---------------------------------------------------------------------------
+
+const CONTRACT = "0x536fDf3027ae6F34499B4452aFbD9E1B872f6Bd2";
+const CHAIN_ID = 8453;
+const ARWEAVE_TX = "52JESwVq4s3x94mc3Rb9EfNrLZMPwFiABkKiMJPAopDe";
+const GATEWAY = `https://gateway.irys.xyz/${ARWEAVE_TX}`;
+const BASESCAN = `https://basescan.org/address/${CONTRACT}`;
+const OPENSEA_COLLECTION = `https://opensea.io/assets/base/${CONTRACT}`;
+const LOGO = "https://gateway.irys.xyz/A7aFwNT7MuZiiLyugduxfZwCdASugBtNtpEgbAhGdVG";
+
+// Rarity tiers (Founder / Polestar / Aurora / Forge / Ember / Cinder).
+const TIERS = [
+  { name: "Founder", meaning: "1/1 Archive · token 0", count: 1 },
+  { name: "Polestar", meaning: "Legendary", count: 1 },
+  { name: "Aurora", meaning: "Epic", count: 6 },
+  { name: "Forge", meaning: "Rare", count: 14 },
+  { name: "Ember", meaning: "Uncommon", count: 28 },
+  { name: "Cinder", meaning: "Common", count: 50 },
+];
+
+// "The Ember Ledger" — the 9-verse saga. Embedded for rendering AND for the
+// remix prompts (encoded client-side). Verbatim from the collection lore.
+const SAGA_TITLE = "The Ember Ledger";
+const SAGA_SUBTITLE = "A saga struck in a hundred plates.";
+const VERSES: { numeral: string; lines: string[] }[] = [
+  {
+    numeral: "I.",
+    lines: [
+      "In the years before the thaw, when the Forge still slept beneath the ice,",
+      "the first keepers came north to the Verge —",
+      "where the sun is a low coal and the sky writes in green fire,",
+      "and no word spoken is ever lost.",
+    ],
+  },
+  {
+    numeral: "II.",
+    lines: [
+      "They raised no throne and crowned no king.",
+      "They raised a Ledger.",
+      "And the Ledger took the shape of gates:",
+      "torii of black iron, gantries of cold steel,",
+      "each one a shrine to the work that was owed.",
+    ],
+  },
+  {
+    numeral: "III.",
+    lines: [
+      "The law of the Verge was plain and pitiless —",
+      "the work is paid in ember, and the proof is bonded by watchers.",
+      "No coin moved until a watcher had weighed it.",
+      "No watcher weighed false twice.",
+    ],
+  },
+  {
+    numeral: "IV.",
+    lines: [
+      "To the Patron who fed the Forge, the Ember-Vault.",
+      "To the Lantern-bearer, the long road between the pylons.",
+      "To the Weigher of Verdicts, the Last Word.",
+      "To the Keeper, the Ledger itself, that cannot lie and cannot thaw.",
+    ],
+  },
+  {
+    numeral: "V.",
+    lines: [
+      "They marked nothing in letters, for letters can be forged.",
+      "They marked the work in light:",
+      "a thin aurora for the small deeds,",
+      "twin fires for the greater,",
+      "and over the rarest, a single Polestar burning gold.",
+    ],
+  },
+  {
+    numeral: "VI.",
+    lines: [
+      "Once in the age there rose a plate so bright it inverted the night —",
+      "the snow gone black, the heaven gone to gold.",
+      "This they did not number among the hundred.",
+      "This they called the Archive, and set it first, and spoke of it least.",
+    ],
+  },
+  {
+    numeral: "VII.",
+    lines: [
+      "The Black Stone of Witness stood unmarked on purpose,",
+      "for a true thing needs no inscription.",
+      "What was done at the Verge was done.",
+      "What was bonded stayed bonded.",
+    ],
+  },
+  {
+    numeral: "VIII.",
+    lines: [
+      "They say the hundred keepers never died.",
+      "They say each was struck into a plate and set into the ice,",
+      "and that on the coldest night the gates still glow,",
+      "waiting for the next who comes north owing work.",
+    ],
+  },
+  {
+    numeral: "IX.",
+    lines: [
+      "If you have come this far, you owe the Ledger nothing —",
+      "only this: that you do not let the fire go out,",
+      "and that you tell the saga onward, in your own cold tongue,",
+      "and add to it what the keepers never wrote.",
+    ],
+  },
+];
+
+const toc = [
+  { label: "Collection", anchor: "collection" },
+  { label: "Check eligibility", anchor: "eligibility" },
+  { label: "Claim", anchor: "claim" },
+  { label: "Your plate", anchor: "your-plate" },
+  { label: "Gallery", anchor: "gallery" },
+  { label: "Offers & selling", anchor: "marketplace" },
+  { label: "Reviewer benefit", anchor: "reviewer-benefit" },
+  { label: "Lore", anchor: "lore" },
+  { label: "Tell the saga onward", anchor: "remix" },
+];
+---
+
+<BaseLayout
+  title="Agent Bounty Plates"
+  description="Agent Bounty Plates — a 100-piece ERC-721 collection on Base by Gökhan Turhan. A community airdrop to the largest 99 traders. Check eligibility, claim your plate, browse the gallery, and read The Ember Ledger."
+>
+  <StatusBanner status="live" />
+
+  <!-- TOC -->
+  <section class="shell" style="padding: var(--space-5) 0 0;">
+    <nav class="page-toc" aria-label="On this page">
+      <span class="page-toc-label">On this page</span>
+      <ul>
+        {toc.map((t) => (
+          <li><a href={`#${t.anchor}`}>{t.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+  </section>
+
+  <!-- 1. HERO ------------------------------------------------------------ -->
+  <section class="shell" style="padding: var(--space-5) 0 var(--space-6);" id="collection">
+    <p class="eyebrow">NFT collection · Live on Base · ERC-721</p>
+    <h1>Agent Bounty Plates</h1>
+    <p class="lead">
+      A hundred plates struck at the Verge — a community airdrop to the largest
+      99 traders. Token 0 is the genesis Archive. Original works by Gökhan
+      Turhan, live on Base.
+    </p>
+    <div class="hero-row">
+      <img
+        class="hero-logo"
+        src={LOGO}
+        alt="Agent Bounty Plates collection mark"
+        width="120"
+        height="120"
+        loading="eager"
+      />
+      <div class="kv hero-kv">
+        <div><div class="k">Name</div><div class="v">Agent Bounty Plates (PLATE)</div></div>
+        <div><div class="k">Standard</div><div class="v">ERC-721 · 100 plates</div></div>
+        <div><div class="k">Network</div><div class="v">Base · chain id {CHAIN_ID}</div></div>
+        <div><div class="k">Artist</div><div class="v">Gökhan Turhan</div></div>
+        <div>
+          <div class="k">Contract</div>
+          <div class="v">
+            <a href={BASESCAN} target="_blank" rel="noopener noreferrer">
+              <code>{CONTRACT}</code> ↗
+            </a>
+          </div>
+        </div>
+        <div>
+          <div class="k">Distribution</div>
+          <div class="v">Merkle airdrop to the largest 99 traders. Each claim assigns a random unminted plate.</div>
+        </div>
+      </div>
+    </div>
+    <p class="note">
+      Each claim mints a <strong>random</strong> unminted plate — you do not
+      choose the plate type or rarity tier.
+    </p>
+  </section>
+
+  <!-- 2. ELIGIBILITY CHECK (no wallet) ----------------------------------- -->
+  <section class="shell section" id="eligibility">
+    <h2>Check eligibility</h2>
+    <p>
+      Paste any address to check it against the published eligible set. This is
+      a pure read of the public list — <strong>no wallet connection, no
+      signature</strong>.
+    </p>
+    <div class="panel-box">
+      <label class="field-label" for="elig-input">Address to check</label>
+      <div class="field-row">
+        <input
+          id="elig-input"
+          class="text-input"
+          type="text"
+          inputmode="text"
+          autocomplete="off"
+          spellcheck="false"
+          placeholder="0x…"
+          aria-describedby="elig-result"
+        />
+        <button id="elig-check" class="button" type="button">Check</button>
+      </div>
+      <p id="elig-result" class="result-line" role="status" aria-live="polite"></p>
+      <p class="hint" id="elig-meta"></p>
+    </div>
+  </section>
+
+  <!-- 3. CLAIM / MINT ---------------------------------------------------- -->
+  <section class="shell section" id="claim">
+    <h2>Claim your plate</h2>
+    <p>
+      Claiming is on-chain and irreversible. The eligible address signs the
+      transaction; the plate is minted to the destination wallet you choose
+      (it can be a different wallet than the one that signs). One claim per
+      eligible address.
+    </p>
+
+    <div id="claim-state" class="banner" role="status" aria-live="polite">
+      Reading claim window from the contract…
+    </div>
+
+    <div class="panel-box" style="margin-top: var(--space-4);">
+      <!-- Step: connect -->
+      <div class="claim-step">
+        <div class="field-row">
+          <button id="connect-btn" class="button" type="button">Connect wallet</button>
+          <span id="wallet-addr" class="mono-chip" hidden></span>
+        </div>
+        <p id="network-line" class="hint"></p>
+        <button id="switch-btn" class="button button-ghost" type="button" hidden>
+          Switch to Base
+        </button>
+      </div>
+
+      <!-- Step: destination -->
+      <div class="claim-step">
+        <label class="field-label" for="dest-input">
+          Destination wallet (where the plate is minted)
+        </label>
+        <div class="field-row">
+          <input
+            id="dest-input"
+            class="text-input"
+            type="text"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="0x… (defaults to the connected wallet)"
+          />
+          <button id="dest-self" class="button button-ghost" type="button">Use connected</button>
+        </div>
+        <p class="hint">
+          Leave blank to mint to the connected wallet, or paste a different
+          address to redirect the plate.
+        </p>
+      </div>
+
+      <!-- Step: claim -->
+      <div class="claim-step">
+        <button id="claim-btn" class="button" type="button" disabled>
+          Claim (random plate)
+        </button>
+        <p id="claim-status" class="result-line" role="status" aria-live="polite"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. AFTER MINT ------------------------------------------------------ -->
+  <section class="shell section" id="your-plate" hidden>
+    <h2>Your plate</h2>
+    <div id="your-plate-body" class="minted-card"></div>
+  </section>
+
+  <!-- 5. GALLERY --------------------------------------------------------- -->
+  <section class="shell section" id="gallery">
+    <h2>Gallery</h2>
+    <p>
+      All 100 plates. Each shows its title, token id, rarity tier, and its
+      permanent <code>ar://</code> address on Arweave. Click a plate to view it
+      on Basescan.
+    </p>
+    <div class="gallery-controls">
+      <label class="field-label" for="tier-filter">Filter by tier</label>
+      <select id="tier-filter" class="select-input">
+        <option value="">All tiers</option>
+        {TIERS.map((t) => (
+          <option value={t.name}>{t.name} ({t.count})</option>
+        ))}
+      </select>
+      <button id="gallery-more" class="button button-ghost" type="button">Show all 100</button>
+    </div>
+    <div id="gallery-grid" class="gallery-grid" aria-live="polite"></div>
+  </section>
+
+  <!-- 6. MARKETPLACE (honest scope) -------------------------------------- -->
+  <section class="shell section" id="marketplace">
+    <h2>Offers &amp; selling</h2>
+    <p>
+      List a plate for sale or make an offer on one. Enter a token id to open
+      the cleanest available trading path for that plate.
+    </p>
+    <div class="callout">
+      <strong>On-site trading is scaffolded, not yet embedded.</strong> A fully
+      embedded order book needs a marketplace API (Reservoir / OpenSea Seaport)
+      plus the collection indexed by that marketplace. Until that is wired, the
+      buttons below deep-link to the plate's marketplace page where listing and
+      offers work today. No fake order book is shown.
+    </div>
+    <div class="panel-box">
+      <label class="field-label" for="market-token">Token id (0–99)</label>
+      <div class="field-row">
+        <input
+          id="market-token"
+          class="text-input text-input-narrow"
+          type="number"
+          min="0"
+          max="99"
+          step="1"
+          placeholder="e.g. 7"
+        />
+        <button id="market-list" class="button" type="button">List for sale ↗</button>
+        <button id="market-offer" class="button button-ghost" type="button">Make offer ↗</button>
+      </div>
+      <p id="market-status" class="result-line" role="status" aria-live="polite"></p>
+      <p class="hint">
+        Opens the token's marketplace page in a new tab. The collection page is
+        <a href={OPENSEA_COLLECTION} target="_blank" rel="noopener noreferrer">here ↗</a>.
+      </p>
+    </div>
+  </section>
+
+  <!-- 7. REVIEWER-BONDING BENEFIT ---------------------------------------- -->
+  <section class="shell section" id="reviewer-benefit">
+    <h2>A benefit for reviewers</h2>
+    <div class="callout callout-strong">
+      <strong>
+        Plate holders who are human reviewers get 50% off reviewer bonding.
+      </strong>
+    </div>
+    <p>
+      Reviewers in the AgentBounty protocol post BOUNTY as a bond before they
+      can sign verdicts. Holding an Agent Bounty Plate halves that bonding
+      requirement for human reviewers. This is a protocol benefit — it is not
+      configured or enforced on this page.
+    </p>
+    <p>
+      <a href="/reviewers">Read how reviewers work →</a>
+    </p>
+  </section>
+
+  <!-- 8. LORE ------------------------------------------------------------ -->
+  <section class="shell section" id="lore">
+    <h2>{SAGA_TITLE}</h2>
+    <p class="lead" style="font-style: italic;">{SAGA_SUBTITLE}</p>
+    <div class="saga">
+      {VERSES.map((v) => (
+        <div class="verse">
+          <span class="verse-num">{v.numeral}</span>
+          <p class="verse-lines">
+            {v.lines.map((line, i) => (
+              <>
+                {line}
+                {i < v.lines.length - 1 ? <br /> : null}
+              </>
+            ))}
+          </p>
+        </div>
+      ))}
+    </div>
+    <p class="saga-colophon">Struck by Gökhan Turhan, at the Verge.</p>
+  </section>
+
+  <!-- 9. REMIX ----------------------------------------------------------- -->
+  <section class="shell section" id="remix">
+    <h2>Tell the saga onward</h2>
+    <p>
+      The last verse asks every reader to add to the saga in their own cold
+      tongue. Open it in an assistant and continue the ledger.
+    </p>
+    <div class="field-row">
+      <a id="remix-claude" class="button" href="#" target="_blank" rel="noopener noreferrer">
+        Open in Claude ↗
+      </a>
+      <a id="remix-chatgpt" class="button button-ghost" href="#" target="_blank" rel="noopener noreferrer">
+        Open in ChatGPT ↗
+      </a>
+    </div>
+  </section>
+
+  <!-- Page-scoped styles ------------------------------------------------- -->
+  <style>
+    .note {
+      border-left: 3px solid var(--ink);
+      padding: var(--space-2) var(--space-4);
+      background: var(--panel);
+      font-size: 14px;
+      margin: var(--space-4) 0 0;
+    }
+    .hint {
+      font-size: 12px;
+      color: var(--muted);
+      margin: var(--space-2) 0 0;
+    }
+    .hero-row {
+      display: flex;
+      gap: var(--space-5);
+      align-items: flex-start;
+      flex-wrap: wrap;
+      margin: var(--space-4) 0 0;
+    }
+    .hero-logo {
+      border: 1px solid var(--line);
+      display: block;
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      background: var(--panel);
+      flex: 0 0 auto;
+    }
+    .hero-kv {
+      flex: 1 1 360px;
+      min-width: 280px;
+    }
+    .panel-box {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      padding: var(--space-4);
+    }
+    .field-label {
+      display: block;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 11px;
+      color: var(--muted);
+      margin: 0 0 var(--space-2);
+      font-weight: 700;
+    }
+    .field-row {
+      display: flex;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .text-input,
+    .select-input {
+      flex: 1 1 320px;
+      min-width: 0;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      padding: 0 12px;
+      min-height: 44px;
+      border: 1px solid var(--line);
+      background: var(--panel-strong);
+      color: var(--ink);
+      border-radius: 0;
+    }
+    .text-input-narrow {
+      flex: 0 0 160px;
+    }
+    .select-input {
+      flex: 0 0 220px;
+    }
+    .text-input:focus,
+    .select-input:focus {
+      outline: 2px solid var(--ink);
+      outline-offset: 2px;
+    }
+    .result-line {
+      margin: var(--space-3) 0 0;
+      font-size: 14px;
+      min-height: 1.2em;
+    }
+    .result-line.ok {
+      color: var(--ink);
+      font-weight: 700;
+    }
+    .result-line.bad {
+      color: var(--ink);
+      font-weight: 700;
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+    }
+    .mono-chip {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      border: 1px solid var(--line);
+      background: var(--panel-strong);
+      padding: 6px 10px;
+      word-break: break-all;
+    }
+    .claim-step {
+      padding: var(--space-3) 0;
+      border-top: 1px solid var(--line-soft);
+    }
+    .claim-step:first-child {
+      border-top: 0;
+      padding-top: 0;
+    }
+    .gallery-controls {
+      display: flex;
+      gap: var(--space-3);
+      align-items: flex-end;
+      flex-wrap: wrap;
+      margin: 0 0 var(--space-5);
+    }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: var(--space-4);
+    }
+    .plate-card {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      display: flex;
+      flex-direction: column;
+    }
+    .plate-card .plate-img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      background: var(--panel-strong);
+      border-bottom: 1px solid var(--line);
+    }
+    .plate-meta {
+      padding: var(--space-3);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .plate-title {
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+    .plate-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .plate-ar {
+      font-size: 11px;
+      color: var(--muted);
+      word-break: break-all;
+      border-top: 1px solid var(--line-soft);
+      padding-top: 6px;
+    }
+    .plate-ar code {
+      font-size: 10.5px;
+      background: transparent;
+      border: 0;
+      padding: 0;
+    }
+    .tier-badge {
+      display: inline-block;
+      border: 1px solid var(--line);
+      background: var(--panel-strong);
+      padding: 1px 6px;
+      font-size: 10.5px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .tier-badge[data-tier="Founder"],
+    .tier-badge[data-tier="Polestar"] {
+      background: var(--ink);
+      color: var(--panel);
+      border-color: var(--ink);
+    }
+    .minted-card {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      padding: var(--space-5);
+      display: flex;
+      gap: var(--space-5);
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      flex-direction: column;
+    }
+    .minted-card img {
+      width: min(360px, 80vw);
+      height: auto;
+      border: 1px solid var(--line);
+      display: block;
+    }
+    .saga {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      padding: var(--space-5);
+    }
+    .verse {
+      display: grid;
+      grid-template-columns: 48px minmax(0, 1fr);
+      gap: var(--space-3);
+      padding: var(--space-4) 0;
+      border-top: 1px solid var(--line-soft);
+    }
+    .verse:first-child {
+      border-top: 0;
+      padding-top: 0;
+    }
+    .verse-num {
+      font-weight: 700;
+      color: var(--muted);
+    }
+    .verse-lines {
+      margin: 0;
+      line-height: 1.65;
+    }
+    .saga-colophon {
+      font-style: italic;
+      color: var(--muted);
+      margin-top: var(--space-4);
+      text-align: right;
+    }
+    @media (max-width: 560px) {
+      .verse {
+        grid-template-columns: 36px minmax(0, 1fr);
+      }
+      .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      }
+    }
+  </style>
+
+  <!-- Client logic: eligibility check, gallery, marketplace, remix. ------ -->
+  <!-- No wallet APIs here; this script is plain and runs everywhere. ----- -->
+  <script is:inline define:vars={{ ARWEAVE_TX, GATEWAY, BASESCAN, OPENSEA_COLLECTION, SAGA_TITLE, SAGA_SUBTITLE, VERSES }}>
+    (function () {
+      // ---- normalize an address for comparison (no checksum validation) --
+      function normAddr(s) {
+        return (s || "").trim().toLowerCase();
+      }
+      function isHexAddr(s) {
+        return /^0x[0-9a-fA-F]{40}$/.test((s || "").trim());
+      }
+
+      // ---- shared eligible.json loader (cached promise) ------------------
+      var eligiblePromise = null;
+      function loadEligible() {
+        if (!eligiblePromise) {
+          eligiblePromise = fetch("/claim/eligible.json").then(function (r) {
+            if (!r.ok) throw new Error("eligible.json " + r.status);
+            return r.json();
+          });
+        }
+        return eligiblePromise;
+      }
+      // expose to the module script (wallet/claim) so it shares one fetch
+      window.__abpLoadEligible = loadEligible;
+      window.__abpNormAddr = normAddr;
+      window.__abpIsHexAddr = isHexAddr;
+
+      // =================================================================
+      // 2. ELIGIBILITY CHECK (no wallet)
+      // =================================================================
+      var eInput = document.getElementById("elig-input");
+      var eBtn = document.getElementById("elig-check");
+      var eResult = document.getElementById("elig-result");
+      var eMeta = document.getElementById("elig-meta");
+
+      function setLine(el, text, kind) {
+        el.textContent = text;
+        el.classList.remove("ok", "bad");
+        if (kind) el.classList.add(kind);
+      }
+
+      function runEligibilityCheck() {
+        var raw = eInput.value;
+        if (!isHexAddr(raw)) {
+          setLine(eResult, "Enter a valid 0x… address (40 hex characters).", "bad");
+          return;
+        }
+        setLine(eResult, "Checking…", null);
+        loadEligible()
+          .then(function (data) {
+            var target = normAddr(raw);
+            var list = (data.addresses || []).map(normAddr);
+            var idx = list.indexOf(target);
+            // also confirm a proof exists for the checksummed key
+            var proofKeys = Object.keys(data.proofs || {});
+            var hasProof = proofKeys.some(function (k) {
+              return normAddr(k) === target;
+            });
+            if (idx !== -1 && hasProof) {
+              setLine(
+                eResult,
+                "Eligible. This address is in the published set and has a claim proof.",
+                "ok"
+              );
+            } else if (idx !== -1) {
+              setLine(
+                eResult,
+                "Listed as eligible, but no claim proof was found for it.",
+                "bad"
+              );
+            } else {
+              setLine(
+                eResult,
+                "Not eligible. This address is not in the published set.",
+                "bad"
+              );
+            }
+          })
+          .catch(function () {
+            setLine(eResult, "Could not load the eligible list. Try again.", "bad");
+          });
+      }
+
+      eBtn.addEventListener("click", runEligibilityCheck);
+      eInput.addEventListener("keydown", function (ev) {
+        if (ev.key === "Enter") runEligibilityCheck();
+      });
+      // show how many addresses are published
+      loadEligible()
+        .then(function (data) {
+          var n = (data.addresses || []).length;
+          eMeta.textContent =
+            n + " eligible addresses published · root " + (data.merkleRoot || "");
+        })
+        .catch(function () {});
+
+      // =================================================================
+      // 5. GALLERY
+      // =================================================================
+      var grid = document.getElementById("gallery-grid");
+      var tierFilter = document.getElementById("tier-filter");
+      var moreBtn = document.getElementById("gallery-more");
+      var PLATES = [];
+      var showAll = false;
+      var INITIAL = 12;
+
+      function plateImg(id) {
+        return GATEWAY + "/" + id + ".png";
+      }
+      function arAddr(id) {
+        return "ar://" + ARWEAVE_TX + "/" + id + ".png";
+      }
+
+      function renderGallery() {
+        var tier = tierFilter.value;
+        var rows = PLATES.filter(function (p) {
+          return !tier || p.rarity === tier;
+        });
+        var limited = showAll ? rows : rows.slice(0, INITIAL);
+        var html = limited
+          .map(function (p) {
+            return (
+              '<article class="plate-card">' +
+              '<img class="plate-img" loading="lazy" width="300" height="300" ' +
+              'src="' + plateImg(p.id) + '" ' +
+              'alt="' + escapeHtml(p.title) + '" />' +
+              '<div class="plate-meta">' +
+              '<div class="plate-title">' + escapeHtml(p.title) + "</div>" +
+              '<div class="plate-row">' +
+              "<span>Token #" + p.id + "</span>" +
+              '<span class="tier-badge" data-tier="' + p.rarity + '">' + p.rarity + "</span>" +
+              "</div>" +
+              '<div class="plate-ar"><code>' + arAddr(p.id) + "</code></div>" +
+              '<div class="plate-row">' +
+              '<a href="' + plateImg(p.id) + '" target="_blank" rel="noopener noreferrer">View image ↗</a>' +
+              '<a href="' + OPENSEA_COLLECTION + "/" + p.id + '" target="_blank" rel="noopener noreferrer">Marketplace ↗</a>' +
+              "</div>" +
+              "</div>" +
+              "</article>"
+            );
+          })
+          .join("");
+        grid.innerHTML = html || '<p class="hint">No plates match this tier.</p>';
+        var hiddenCount = rows.length - limited.length;
+        if (showAll || hiddenCount <= 0) {
+          moreBtn.hidden = rows.length <= INITIAL;
+          moreBtn.textContent = "Show fewer";
+          if (rows.length <= INITIAL) moreBtn.hidden = true;
+        } else {
+          moreBtn.hidden = false;
+          moreBtn.textContent = "Show all (" + rows.length + ")";
+        }
+      }
+
+      function escapeHtml(s) {
+        return String(s)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      tierFilter.addEventListener("change", function () {
+        showAll = false;
+        renderGallery();
+      });
+      moreBtn.addEventListener("click", function () {
+        showAll = !showAll;
+        renderGallery();
+      });
+
+      fetch("/claim/plates.json")
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          PLATES = data.plates || [];
+          window.__abpPlates = PLATES; // shared with the minted-plate display
+          renderGallery();
+        })
+        .catch(function () {
+          grid.innerHTML = '<p class="hint">Could not load the plate list.</p>';
+        });
+
+      // =================================================================
+      // 6. MARKETPLACE (deep-link fallback; honest scope)
+      // TODO: embed Reservoir / OpenSea Seaport when API key + indexing ready.
+      // When that lands, replace the deep-links below with client-side
+      // listing + bid calls (e.g. Reservoir SDK execute steps) so the user
+      // can list/offer without leaving the page.
+      // =================================================================
+      var mToken = document.getElementById("market-token");
+      var mList = document.getElementById("market-list");
+      var mOffer = document.getElementById("market-offer");
+      var mStatus = document.getElementById("market-status");
+
+      function tokenIdOrNull() {
+        var v = parseInt(mToken.value, 10);
+        if (isNaN(v) || v < 0 || v > 99) return null;
+        return v;
+      }
+      function openMarketplace(action) {
+        var id = tokenIdOrNull();
+        if (id === null) {
+          setLine(mStatus, "Enter a token id from 0 to 99.", "bad");
+          return;
+        }
+        // OpenSea token page; ?action hints intent where supported.
+        var url = OPENSEA_COLLECTION + "/" + id;
+        setLine(
+          mStatus,
+          (action === "list" ? "Opening listing page" : "Opening offer page") +
+            " for plate #" + id + " in a new tab…",
+          "ok"
+        );
+        window.open(url, "_blank", "noopener");
+      }
+      mList.addEventListener("click", function () { openMarketplace("list"); });
+      mOffer.addEventListener("click", function () { openMarketplace("offer"); });
+
+      // =================================================================
+      // 9. REMIX — encode the skald instruction + full saga, build deep links
+      // =================================================================
+      function buildPrompt() {
+        var lines = [];
+        lines.push(
+          "You are a skald — a saga-poet. Below is \"" +
+            SAGA_TITLE +
+            "\" (" +
+            SAGA_SUBTITLE +
+            "), a nine-verse saga from the Agent Bounty Plates collection by Gökhan Turhan. Its final verse asks every reader to tell the saga onward in their own cold tongue. Read it, then compose new verses (X, XI, XII …) that continue the ledger in the same plain, pitiless, northern register. Keep the imagery: the Verge, the Forge, ember, gates and shrines, watchers and verdicts, the Polestar, the Archive. Do not summarize — extend the saga."
+        );
+        lines.push("");
+        lines.push("# " + SAGA_TITLE);
+        lines.push("*" + SAGA_SUBTITLE + "*");
+        lines.push("");
+        VERSES.forEach(function (v) {
+          lines.push("**" + v.numeral + "**");
+          v.lines.forEach(function (l) { lines.push(l); });
+          lines.push("");
+        });
+        lines.push("— Struck by Gökhan Turhan, at the Verge.");
+        return lines.join("\n");
+      }
+      var prompt = buildPrompt();
+      var encoded = encodeURIComponent(prompt);
+      var claudeA = document.getElementById("remix-claude");
+      var gptA = document.getElementById("remix-chatgpt");
+      claudeA.href = "https://claude.ai/new?q=" + encoded;
+      gptA.href = "https://chatgpt.com/?q=" + encoded;
+    })();
+  </script>
+
+  <!-- Client logic: wallet connect + real on-chain claim via viem. ------- -->
+  <!-- is:inline keeps Astro from bundling this; viem is loaded from esm.sh -->
+  <!-- at runtime in the browser, so this must ship verbatim as a module. -->
+  <script type="module" is:inline>
+    import {
+      createPublicClient,
+      createWalletClient,
+      custom,
+      http,
+      decodeEventLog,
+      isAddress,
+      getAddress,
+    } from "https://esm.sh/viem@2";
+    import { base } from "https://esm.sh/viem@2/chains";
+
+    const CONTRACT = "0x536fDf3027ae6F34499B4452aFbD9E1B872f6Bd2";
+    const CHAIN_ID = 8453;
+    const GATEWAY = "https://gateway.irys.xyz/52JESwVq4s3x94mc3Rb9EfNrLZMPwFiABkKiMJPAopDe";
+
+    // Minimal ABI for the functions/events this page uses (matches the
+    // deployed AgentBountyPlates contract).
+    const ABI = [
+      {
+        type: "function",
+        name: "claim",
+        stateMutability: "nonpayable",
+        inputs: [
+          { name: "to", type: "address" },
+          { name: "proof", type: "bytes32[]" },
+        ],
+        outputs: [{ name: "requestId", type: "uint256" }],
+      },
+      {
+        type: "function",
+        name: "claimDeadline",
+        stateMutability: "view",
+        inputs: [],
+        outputs: [{ type: "uint256" }],
+      },
+      {
+        type: "function",
+        name: "hasClaimed",
+        stateMutability: "view",
+        inputs: [{ name: "", type: "address" }],
+        outputs: [{ type: "bool" }],
+      },
+      {
+        type: "function",
+        name: "claimsOpen",
+        stateMutability: "view",
+        inputs: [],
+        outputs: [{ type: "bool" }],
+      },
+      {
+        type: "function",
+        name: "remainingPlates",
+        stateMutability: "view",
+        inputs: [],
+        outputs: [{ type: "uint256" }],
+      },
+      {
+        type: "function",
+        name: "MAX_SUPPLY",
+        stateMutability: "view",
+        inputs: [],
+        outputs: [{ type: "uint256" }],
+      },
+      {
+        type: "event",
+        name: "ClaimRequested",
+        inputs: [
+          { name: "claimant", type: "address", indexed: true },
+          { name: "recipient", type: "address", indexed: true },
+          { name: "requestId", type: "uint256", indexed: true },
+        ],
+      },
+      {
+        type: "event",
+        name: "PlateClaimed",
+        inputs: [
+          { name: "recipient", type: "address", indexed: true },
+          { name: "tokenId", type: "uint256", indexed: true },
+          { name: "requestId", type: "uint256", indexed: true },
+        ],
+      },
+    ];
+
+    // ---- DOM ----
+    const $ = (id) => document.getElementById(id);
+    const stateBox = $("claim-state");
+    const connectBtn = $("connect-btn");
+    const walletAddrEl = $("wallet-addr");
+    const networkLine = $("network-line");
+    const switchBtn = $("switch-btn");
+    const destInput = $("dest-input");
+    const destSelf = $("dest-self");
+    const claimBtn = $("claim-btn");
+    const claimStatus = $("claim-status");
+    const yourPlateSection = $("your-plate");
+    const yourPlateBody = $("your-plate-body");
+
+    function setStatus(el, text, kind) {
+      el.textContent = text;
+      el.classList.remove("ok", "bad");
+      if (kind) el.classList.add(kind);
+    }
+
+    // Public client (read-only) over Base via a public RPC. Used to read the
+    // claim window even before any wallet is connected.
+    const publicClient = createPublicClient({ chain: base, transport: http() });
+
+    let walletClient = null;
+    let account = null;
+    let claimsOpen = false; // derived from claimDeadline()
+
+    // ---- read claim window from chain ----
+    async function refreshClaimWindow() {
+      try {
+        const [deadline, remaining] = await Promise.all([
+          publicClient.readContract({ address: CONTRACT, abi: ABI, functionName: "claimDeadline" }),
+          publicClient.readContract({ address: CONTRACT, abi: ABI, functionName: "remainingPlates" }),
+        ]);
+        const now = Math.floor(Date.now() / 1000);
+        const dl = Number(deadline);
+        if (dl === 0) {
+          claimsOpen = false;
+          stateBox.textContent =
+            "Claim opens soon — the claim window has not been opened yet. " +
+            remaining.toString() + " of 99 community plates remain.";
+        } else if (now > dl) {
+          claimsOpen = false;
+          stateBox.textContent =
+            "The claim window has closed. " + remaining.toString() +
+            " plates went unclaimed. The gallery and marketplace below still work.";
+        } else {
+          claimsOpen = true;
+          const left = dl - now;
+          stateBox.textContent =
+            "Claim is open. " + remaining.toString() +
+            " of 99 plates remain. Window closes in " + fmtDuration(left) + ".";
+          // live countdown
+          scheduleCountdown(dl, remaining);
+        }
+      } catch (err) {
+        stateBox.textContent =
+          "Could not read the claim window from the contract (RPC error). You can still browse the gallery below.";
+      }
+      updateClaimButton();
+    }
+
+    let countdownTimer = null;
+    function scheduleCountdown(dl, remaining) {
+      if (countdownTimer) clearInterval(countdownTimer);
+      countdownTimer = setInterval(function () {
+        const now = Math.floor(Date.now() / 1000);
+        const left = dl - now;
+        if (left <= 0) {
+          clearInterval(countdownTimer);
+          claimsOpen = false;
+          stateBox.textContent = "The claim window has just closed.";
+          updateClaimButton();
+          return;
+        }
+        stateBox.textContent =
+          "Claim is open. " + remaining.toString() +
+          " of 99 plates remain. Window closes in " + fmtDuration(left) + ".";
+      }, 1000);
+    }
+
+    function fmtDuration(secs) {
+      const d = Math.floor(secs / 86400);
+      const h = Math.floor((secs % 86400) / 3600);
+      const m = Math.floor((secs % 3600) / 60);
+      const s = secs % 60;
+      const parts = [];
+      if (d) parts.push(d + "d");
+      if (h || d) parts.push(h + "h");
+      parts.push(m + "m");
+      parts.push(s + "s");
+      return parts.join(" ");
+    }
+
+    // ---- wallet connection ----
+    function getEthereum() {
+      return typeof window !== "undefined" ? window.ethereum : null;
+    }
+
+    async function connect() {
+      const eth = getEthereum();
+      if (!eth) {
+        setStatus(
+          claimStatus,
+          "No browser wallet detected. Install a wallet (e.g. an injected EIP-1193 provider) to claim.",
+          "bad"
+        );
+        networkLine.textContent = "No wallet found.";
+        return;
+      }
+      try {
+        walletClient = createWalletClient({ chain: base, transport: custom(eth) });
+        const accounts = await walletClient.requestAddresses();
+        account = accounts[0];
+        walletAddrEl.hidden = false;
+        walletAddrEl.textContent = account;
+        connectBtn.textContent = "Wallet connected";
+        await checkNetwork();
+        await reflectEligibility();
+      } catch (err) {
+        setStatus(claimStatus, "Wallet connection was rejected or failed.", "bad");
+      }
+    }
+
+    async function currentChainId() {
+      const eth = getEthereum();
+      try {
+        const hex = await eth.request({ method: "eth_chainId" });
+        return parseInt(hex, 16);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    async function checkNetwork() {
+      const id = await currentChainId();
+      if (id === CHAIN_ID) {
+        networkLine.textContent = "Connected to Base (chain id 8453).";
+        switchBtn.hidden = true;
+      } else {
+        networkLine.textContent =
+          "Wrong network (chain id " + id + "). Switch to Base to claim.";
+        switchBtn.hidden = false;
+      }
+      updateClaimButton();
+      return id === CHAIN_ID;
+    }
+
+    async function switchToBase() {
+      const eth = getEthereum();
+      if (!eth) return;
+      try {
+        await eth.request({
+          method: "wallet_switchEthereumChain",
+          params: [{ chainId: "0x2105" }], // 8453
+        });
+      } catch (err) {
+        // 4902 = chain not added
+        if (err && (err.code === 4902 || (err.data && err.data.originalError && err.data.originalError.code === 4902))) {
+          try {
+            await eth.request({
+              method: "wallet_addEthereumChain",
+              params: [
+                {
+                  chainId: "0x2105",
+                  chainName: "Base",
+                  nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
+                  rpcUrls: ["https://mainnet.base.org"],
+                  blockExplorerUrls: ["https://basescan.org"],
+                },
+              ],
+            });
+          } catch (e) {
+            setStatus(claimStatus, "Could not add the Base network.", "bad");
+          }
+        } else {
+          setStatus(claimStatus, "Network switch was rejected.", "bad");
+        }
+      }
+      await checkNetwork();
+    }
+
+    // ---- find the connected address's proof from eligible.json ----
+    async function proofFor(addr) {
+      const loader = window.__abpLoadEligible;
+      if (!loader) return null;
+      const data = await loader();
+      const proofs = data.proofs || {};
+      // direct (checksum) hit first
+      if (proofs[addr]) return proofs[addr];
+      const target = (addr || "").toLowerCase();
+      const key = Object.keys(proofs).find((k) => k.toLowerCase() === target);
+      return key ? proofs[key] : null;
+    }
+
+    async function reflectEligibility() {
+      if (!account) return;
+      const proof = await proofFor(account);
+      if (!proof) {
+        setStatus(
+          claimStatus,
+          "The connected address is not in the eligible set — it cannot claim.",
+          "bad"
+        );
+      } else {
+        try {
+          const claimed = await publicClient.readContract({
+            address: CONTRACT, abi: ABI, functionName: "hasClaimed", args: [account],
+          });
+          if (claimed) {
+            setStatus(claimStatus, "This address has already claimed its plate.", "ok");
+            await showClaimedPlate(account);
+          } else {
+            setStatus(claimStatus, "Eligible and not yet claimed. You can claim.", "ok");
+          }
+        } catch (e) {
+          setStatus(claimStatus, "Eligible. (Could not read claim status from chain.)", "ok");
+        }
+      }
+      updateClaimButton();
+    }
+
+    async function updateClaimButton() {
+      // Enable only when: claims open, wallet connected, on Base, eligible, not claimed.
+      let enable = false;
+      if (claimsOpen && account) {
+        const onBase = (await currentChainId()) === CHAIN_ID;
+        if (onBase) {
+          const proof = await proofFor(account);
+          if (proof) {
+            try {
+              const claimed = await publicClient.readContract({
+                address: CONTRACT, abi: ABI, functionName: "hasClaimed", args: [account],
+              });
+              enable = !claimed;
+            } catch (e) {
+              enable = true; // allow attempt; contract will revert if already claimed
+            }
+          }
+        }
+      }
+      claimBtn.disabled = !enable;
+      claimBtn.textContent = claimsOpen ? "Claim (random plate)" : "Claim opens soon";
+    }
+
+    // ---- the claim transaction ----
+    async function doClaim() {
+      if (!account || !walletClient) {
+        setStatus(claimStatus, "Connect a wallet first.", "bad");
+        return;
+      }
+      if (!claimsOpen) {
+        setStatus(claimStatus, "Claims are not open yet.", "bad");
+        return;
+      }
+      if (!(await checkNetwork())) {
+        setStatus(claimStatus, "Switch to Base before claiming.", "bad");
+        return;
+      }
+      const proof = await proofFor(account);
+      if (!proof) {
+        setStatus(claimStatus, "No proof for this address — not eligible.", "bad");
+        return;
+      }
+      // resolve destination
+      let to = account;
+      const destRaw = (destInput.value || "").trim();
+      if (destRaw) {
+        if (!isAddress(destRaw)) {
+          setStatus(claimStatus, "Destination is not a valid address.", "bad");
+          return;
+        }
+        to = getAddress(destRaw);
+      }
+
+      try {
+        claimBtn.disabled = true;
+        setStatus(claimStatus, "Confirm the transaction in your wallet…", null);
+        const hash = await walletClient.writeContract({
+          address: CONTRACT,
+          abi: ABI,
+          functionName: "claim",
+          args: [to, proof],
+          account,
+        });
+        setStatus(claimStatus, "Submitted. Waiting for confirmation… (" + hash + ")", null);
+        const receipt = await publicClient.waitForTransactionReceipt({ hash });
+        // claim() only REQUESTS randomness via Chainlink VRF. Parse ClaimRequested
+        // to get our requestId; the plate is minted asynchronously (PlateClaimed),
+        // typically ~30-60s later in the VRF fulfillment tx — NOT in this receipt.
+        let requestId = null;
+        for (const log of receipt.logs) {
+          if (log.address.toLowerCase() !== CONTRACT.toLowerCase()) continue;
+          try {
+            const ev = decodeEventLog({ abi: ABI, data: log.data, topics: log.topics });
+            if (ev.eventName === "ClaimRequested") { requestId = ev.args.requestId; break; }
+          } catch (e) { /* not our event */ }
+        }
+        setStatus(claimStatus, "Claim confirmed ✓ — Chainlink VRF is assigning your random plate (usually ~30–60s). Watching for it…", "ok");
+        // Watch for the plate being minted for this request.
+        const unwatch = publicClient.watchContractEvent({
+          address: CONTRACT,
+          abi: ABI,
+          eventName: "PlateClaimed",
+          args: requestId != null ? { requestId: requestId } : { recipient: to },
+          onLogs: function (logs) {
+            const l = logs && logs[0];
+            if (!l || !l.args) return;
+            const tokenId = Number(l.args.tokenId);
+            setStatus(claimStatus, "Your plate arrived — #" + tokenId + ".", "ok");
+            renderMintedPlate(tokenId, to);
+            try { unwatch(); } catch (e) {}
+            refreshClaimWindow();
+          },
+        });
+        // Safety: stop watching after 5 minutes.
+        setTimeout(function () { try { unwatch(); } catch (e) {} }, 300000);
+        await refreshClaimWindow();
+        claimBtn.disabled = false;
+      } catch (err) {
+        const msg = (err && (err.shortMessage || err.message)) || "Transaction failed.";
+        setStatus(claimStatus, "Claim failed: " + msg, "bad");
+        claimBtn.disabled = false;
+      }
+    }
+
+    // ---- after-mint display ----
+    function plateData(id) {
+      const list = window.__abpPlates || [];
+      return list.find((p) => p.id === id) || { id: id, title: "Plate #" + id, rarity: "" };
+    }
+
+    function renderMintedPlate(tokenId, to) {
+      const p = plateData(tokenId);
+      const img = GATEWAY + "/" + tokenId + ".png";
+      const ar = "ar://52JESwVq4s3x94mc3Rb9EfNrLZMPwFiABkKiMJPAopDe/" + tokenId + ".png";
+      const opensea = "https://opensea.io/assets/base/" + CONTRACT + "/" + tokenId;
+      yourPlateSection.hidden = false;
+      yourPlateBody.innerHTML =
+        '<img src="' + img + '" alt="Plate #' + tokenId + '" />' +
+        "<div>" +
+        "<h3 style=\"margin-top:0;\">" + escapeHtml(p.title) + "</h3>" +
+        "<p>Token #" + tokenId + (p.rarity ? " · " + p.rarity : "") + "</p>" +
+        '<p style="font-size:12px;color:var(--muted);word-break:break-all;"><code>' + ar + "</code></p>" +
+        (to ? '<p style="font-size:12px;color:var(--muted);">Minted to ' + escapeHtml(to) + "</p>" : "") +
+        '<p><a class="button" href="' + opensea + '" target="_blank" rel="noopener noreferrer">View on marketplace ↗</a></p>' +
+        "</div>";
+      yourPlateSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    // If a connected wallet already claimed, we know hasClaimed=true but not
+    // which tokenId (no on-chain reverse index). Show a gentle note + link.
+    async function showClaimedPlate(addr) {
+      yourPlateSection.hidden = false;
+      const opensea = "https://opensea.io/" + addr;
+      yourPlateBody.innerHTML =
+        "<div>" +
+        "<h3 style=\"margin-top:0;\">Already claimed</h3>" +
+        "<p>This address has already claimed its plate. Check the wallet, or view its collected items on the marketplace.</p>" +
+        '<p><a class="button button-ghost" href="' + opensea + '" target="_blank" rel="noopener noreferrer">View wallet on OpenSea ↗</a></p>' +
+        "</div>";
+    }
+
+    function escapeHtml(s) {
+      return String(s)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    // ---- wiring ----
+    connectBtn.addEventListener("click", connect);
+    switchBtn.addEventListener("click", switchToBase);
+    claimBtn.addEventListener("click", doClaim);
+    destSelf.addEventListener("click", function () {
+      destInput.value = account || "";
+    });
+
+    // React to wallet account/chain changes if the provider supports events.
+    const eth0 = getEthereum();
+    if (eth0 && eth0.on) {
+      eth0.on("accountsChanged", function (accs) {
+        account = accs && accs[0] ? accs[0] : null;
+        if (account) {
+          walletAddrEl.hidden = false;
+          walletAddrEl.textContent = account;
+          reflectEligibility();
+        } else {
+          walletAddrEl.hidden = true;
+          connectBtn.textContent = "Connect wallet";
+        }
+        updateClaimButton();
+      });
+      eth0.on("chainChanged", function () {
+        checkNetwork();
+      });
+    }
+
+    // initial read
+    refreshClaimWindow();
+  </script>
+</BaseLayout>

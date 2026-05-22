@@ -40,6 +40,7 @@ export const TOP_NAV: NavLink[] = [
   { label: "Roadmap", href: "/roadmap" },
   { label: "Status", href: "/status" },
   { label: "Token", href: "/token" },
+  { label: "Plates", href: "/claim" },
   { label: "Community", href: "/community" },
 ];
 
