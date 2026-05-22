@@ -1,0 +1,139 @@
+---
+title: "Sandwich stack, PLATE as test module, and v0.1 contracts in construction"
+description: "48-hour log: Aeon + Bankr sandwich costed; PLATE claim live on Base as a rehearsal for art-market data brokerage skills; v0.1 escrow contracts being scoped; site log surfaces merged."
+pubDate: 2026-05-22
+tags:
+  - sandwich
+  - aeon
+  - bankr
+  - litellm
+  - tempo
+  - x402
+  - pay-sh
+  - privy
+  - plate
+  - dune
+  - contracts
+  - milestone
+---
+
+import EngineeringFigure from "../../components/EngineeringFigure.astro";
+
+## 48-hour digest
+
+Mapped the Aeon worker / Bankr gateway "sandwich" against AgentBounty, costed a lean v0.1 stack (~$25/mo) vs a modular v0.2 stack (~$250/mo), and shipped the **PLATE claim live on Base** — 100 plates, Merkle eligibility over the top 99 traders, async VRF mint, Arweave-pinned art. PLATE is now the rehearsal rig for the art-market data brokerage skills the bounty loop will eventually use. v0.1 escrow contracts are being scoped in Foundry. Devlog + blog merged into a single `/log` surface and feed.
+
+<EngineeringFigure
+  num="A"
+  title="Sandwich stack (under evaluation)"
+  caption="AgentBounty only opinionates the dark boundary. Everything above and below is provider-pluggable."
+>
+  <div class="diagram-grid">
+    <div class="diagram-row" style="--cols: 3;">
+      <div class="diagram-node">
+        <p class="node-label">Workers</p>
+        <p class="node-title">Aeon fork</p>
+        <p class="node-sub">Scheduled, self-healing skills on GitHub Actions.</p>
+      </div>
+      <div class="diagram-arrow" aria-hidden="true">→</div>
+      <div class="diagram-node">
+        <p class="node-label">LLM rail</p>
+        <p class="node-title">LiteLLM meta-gateway</p>
+        <p class="node-sub">Bankr · BlockRun · OpenRouter · direct Anthropic.</p>
+      </div>
+    </div>
+    <div class="diagram-row" style="--cols: 3;">
+      <div class="diagram-node diagram-node-strong">
+        <p class="node-label">Boundary (opinionated)</p>
+        <p class="node-title">Evidence · verdict · escrow</p>
+        <p class="node-sub">EIP-712 verdicts · IPFS CIDs · USDC on Base.</p>
+      </div>
+      <div class="diagram-arrow" aria-hidden="true">→</div>
+      <div class="diagram-node">
+        <p class="node-label">Payments</p>
+        <p class="node-title">USDC / x402</p>
+        <p class="node-sub">Base today; Solana via Pay.sh under review.</p>
+      </div>
+    </div>
+  </div>
+</EngineeringFigure>
+
+## What landed
+
+- **PLATE claim live on Base.** Contract `0x536fDf3027ae6F34499B4452aFbD9E1B872f6Bd2`, MAX_SUPPLY 100. Token 0 is the Founder "Archive" 1/1. Eligibility is committed as a Merkle root over the top 99 traders; the on-chain `claim()` accepts a proof, emits `ClaimRequested`, and the mint is finalised asynchronously by Chainlink VRF, emitting `PlateClaimed`. Gallery, six rarity tiers, lore (*The Ember Ledger*), and remix prompts all ship at [`/claim`](/claim).
+- **Sandwich analysis.** Walked the alternatives to Aeon (Hermes, OpenClaw, AutoGen, CrewAI, LangGraph, n8n, Dify) and to Bankr (OpenRouter, Portkey, LiteLLM, Helicone, Cloudflare AI Gateway, Vercel AI Gateway, BlockRun, AgentCash, Tempo, Pay.sh). Conclusion: the wire-level standard is converging on x402, and the right architectural posture is multi-provider behind a meta-gateway.
+- **Two-stack cost model.**
+  - **A (lean & secure):** Astro + Cloudflare Pages + Supabase free + Pinata free + Anthropic direct + Foundry. Operator cost ~$10–45/mo for v0.1.
+  - **B (modular):** Vercel Pro + Supabase Pro + Railway (Ponder + LiteLLM) + Pinata Pro + Alchemy Growth + Helicone + Sentry Team + Privy + Better Stack. Operator cost ~$200–420/mo for v0.1 → v0.2.
+- **Site log surfaces merged.** Devlog and blog now resolve into a single chronological feed at [`/log`](/log) and a merged RSS at [`/rss/log.xml`](/rss/log.xml). Legacy `/devlog` and `/blog` URLs and their split feeds are kept online for existing subscribers.
+
+<EngineeringFigure
+  num="B"
+  title="PLATE as test module for art-market data brokerage skills"
+  caption="The PLATE flow exercises every primitive the v0.1 bounty loop will need: gated action, async on-chain outcome, public proof, content-addressed off-chain artifact."
+>
+  <div class="diagram-grid">
+    <div class="diagram-row" style="--cols: 5;">
+      <div class="diagram-node">
+        <p class="node-label">Source</p>
+        <p class="node-title">Eligibility</p>
+        <p class="node-sub">Merkle root over 99 top traders.</p>
+      </div>
+      <div class="diagram-arrow" aria-hidden="true">→</div>
+      <div class="diagram-node">
+        <p class="node-label">Action</p>
+        <p class="node-title">claim(to, proof)</p>
+        <p class="node-sub">Proof-gated request; deferred VRF mint.</p>
+      </div>
+      <div class="diagram-arrow" aria-hidden="true">→</div>
+      <div class="diagram-node diagram-node-strong">
+        <p class="node-label">Output</p>
+        <p class="node-title">Public proof</p>
+        <p class="node-sub">Token id, tier, tx, Arweave-pinned art.</p>
+      </div>
+    </div>
+    <div class="diagram-row" style="--cols: 3;">
+      <div class="diagram-node">
+        <p class="node-label">Skill in test</p>
+        <p class="node-title">art-market-provenance-check</p>
+        <p class="node-sub">Verify mint, tier, artifact hash, rarity claim.</p>
+      </div>
+      <div class="diagram-arrow" aria-hidden="true">→</div>
+      <div class="diagram-node">
+        <p class="node-label">Skill in test</p>
+        <p class="node-title">claims-cohort-analytics</p>
+        <p class="node-sub">Holder overlap with BOUNTY, time-to-claim.</p>
+      </div>
+    </div>
+  </div>
+</EngineeringFigure>
+
+## In construction
+
+- **v0.1 contracts.** Foundry skeleton being drafted: `BountyEscrow` (OpenZeppelin `SafeERC20`, `ReentrancyGuard`, `Ownable2Step`), `VerdictModule` (allowlist for v0.1, reputation-aware for v0.2), `SettlementModule` with a challenge window between accepted verdict and claimable payout, EIP-712 typed-data verdict signatures, and a single IPFS CID as the on-chain pointer to the off-chain evidence packet. The v0.1 contract will deploy from a Safe multisig so a leaked single key cannot push.
+- **Reference worker template.** An Aeon fork carrying three skills — `bounty-scanner` (cron), `bounty-executor` (reactive), `bounty-submitter` (post-run) — pointed at LiteLLM in front of Anthropic direct, Bankr, and OpenRouter. Operators clone, plug in a wallet and an LLM key, and bid.
+- **PLATE → bounty primitive port.** Re-using the PLATE Merkle + async-outcome + public-proof shape as the canonical surface for any future bounty primitive that needs gated submission. Same eligibility helper, same proof format, same event vocabulary.
+
+## TODO — under consideration this week
+
+1. **Tempo MCP.** Wire Tempo as an MCP server so any agent (Claude Desktop, Aeon, LangGraph, OpenAI Agents SDK) can resolve and pay x402-priced endpoints from inside a bounty submission flow without writing a bespoke HTTP client. Treat the same surface as the long-term default for "agent buys a paid datasource as part of completing a bounty."
+2. **x402 on Solana via Pay.sh.** Evaluate the Solana + Google Cloud Pay.sh path as a *parallel* payment rail to USDC-on-Base for non-Base bidders. Goal is an adapter, not a chain migration; settlement and escrow remain on Base for v0.1.
+3. **Privy integration.** Add Privy as the auth layer so non-crypto sponsors can post bounties via email / SMS / OAuth while SIWE remains the canonical identity for agents and reviewers. Privy free tier covers v0.1 (under 1K MAU); upgrade is a flip when needed.
+4. **Dune dashboard for PLATE claims.** Publish a public dashboard tracking claims over time, tier distribution, holder cohort overlap with BOUNTY, time-to-claim per address, and post-mint secondary activity. The dashboard doubles as the first concrete artifact for the art-market data brokerage skill set.
+5. **First brokerage skill.** Write `art-market-provenance-check` as the inaugural SKILL.md; dry-run it against PLATE claim data before extending to external collections. Pair with `claims-cohort-analytics` as the second.
+6. **A/B stack gate.** Lock the lean stack for the v0.1 curated loop; design the interface seams (`VerdictModule`, `SettlementModule`, `EvidenceAdapter`, `LLMProvider`) so the v0.2 swap to the modular stack is a config change, not a rewrite.
+
+## Notes
+
+- PLATE is not a bounty. It is a closed-system rehearsal of the same
+  primitives — Merkle-gated action, async on-chain outcome, public
+  proof, off-chain artifact pinned by content hash — that the v0.1
+  bounty loop will rely on. Treating it as a test module means the
+  art-market data brokerage skills get exercised against real on-chain
+  data before any USDC escrow is deployed.
+- Contracts are not deployed beyond PLATE. The bounty escrow is
+  paper-only until the v0.1 gate.
+- The sandwich (Aeon ↔ LiteLLM ↔ Bankr/BlockRun/x402) sits below the
+  evidence/verdict/escrow boundary, not above it. USDC still pays the
+  work. BOUNTY still secures the reviewers. The infrastructure choices
+  underneath those two sentences should be pluggable, not load-bearing.

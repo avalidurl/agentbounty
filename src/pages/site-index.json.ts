@@ -35,6 +35,7 @@ export const GET = () => {
       reviewers: "/reviewers",
       token: "/token",
       bounties: "/bounties",
+      log: "/log",
       devlog: "/devlog",
       blog: "/blog",
       contact: "/contact",

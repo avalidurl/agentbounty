@@ -1,0 +1,139 @@
+---
+import DocsLayout from "../../layouts/DocsLayout.astro";
+import { getCollection, type CollectionEntry } from "astro:content";
+
+type Kind = "devlog" | "blog";
+type Entry = {
+  kind: Kind;
+  id: string;
+  href: string;
+  data: CollectionEntry<"devlog">["data"];
+};
+
+const devlogEntries: Entry[] = (
+  await getCollection("devlog", ({ data }) => !data.draft)
+).map((entry) => ({
+  kind: "devlog",
+  id: entry.id,
+  href: `/devlog/${entry.id}/`,
+  data: entry.data,
+}));
+
+const blogEntries: Entry[] = (
+  await getCollection("blog", ({ data }) => !data.draft)
+).map((entry) => ({
+  kind: "blog",
+  id: entry.id,
+  href: `/blog/${entry.id}/`,
+  data: entry.data,
+}));
+
+const entries: Entry[] = [...devlogEntries, ...blogEntries].sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+
+const toc = [
+  { label: "Entries", anchor: "entries" },
+  { label: "RSS", anchor: "rss" },
+  { label: "Legacy feeds", anchor: "legacy" },
+];
+---
+<DocsLayout
+  title="Log"
+  description="Merged build log and longer writing for AgentBounty. Site changes, mechanism notes, essays, and Q&A in one feed."
+  toc={toc}
+  eyebrow="Log"
+>
+  <p class="lead">
+    One feed for everything the project writes. Short build notes
+    (formerly <a href="/devlog">/devlog</a>) and longer posts (formerly
+    <a href="/blog">/blog</a>) now live in the same surface, sorted by
+    date.
+  </p>
+  <p>
+    Subscribe to the merged feed: <a href="/rss/log.xml">/rss/log.xml</a>.
+  </p>
+
+  <h2 id="entries">Entries</h2>
+  <ul class="log-entries">
+    {entries.map((entry) => (
+      <li>
+        <a href={entry.href}>
+          <strong>{entry.data.title}</strong>
+        </a>
+        <div class="log-entry-meta">
+          <span class={`log-kind log-kind-${entry.kind}`}>
+            {entry.kind === "devlog" ? "Devlog" : "Blog"}
+          </span>
+          <span class="log-date">
+            {entry.data.pubDate.toISOString().slice(0, 10)}
+          </span>
+        </div>
+        <div class="log-entry-desc">{entry.data.description}</div>
+      </li>
+    ))}
+  </ul>
+
+  <h2 id="rss">RSS</h2>
+  <p>
+    Merged feed: <a href="/rss/log.xml">/rss/log.xml</a>. Includes every
+    devlog and blog entry in publication order.
+  </p>
+
+  <h2 id="legacy">Legacy feeds</h2>
+  <p>
+    The split feeds remain online for existing subscribers and links:
+  </p>
+  <ul>
+    <li><a href="/rss/devlog.xml">/rss/devlog.xml</a> — build notes only.</li>
+    <li><a href="/rss/blog.xml">/rss/blog.xml</a> — longer posts only.</li>
+  </ul>
+  <p>
+    New entries will appear in all three. New subscribers should use the
+    merged feed.
+  </p>
+</DocsLayout>
+<style>
+  .log-entries {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: var(--space-4);
+  }
+  .log-entries li {
+    border-bottom: 1px solid var(--line-soft);
+    padding-bottom: var(--space-3);
+  }
+  .log-entries li:last-child {
+    border-bottom: 0;
+  }
+  .log-entry-meta {
+    display: flex;
+    gap: var(--space-3);
+    align-items: center;
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--muted);
+    font-family: var(--font-mono);
+  }
+  .log-kind {
+    border: 1px solid var(--line);
+    background: var(--panel);
+    padding: 1px 6px;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .log-kind-blog {
+    background: var(--ink);
+    color: var(--panel);
+    border-color: var(--ink);
+  }
+  .log-entry-desc {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 4px;
+  }
+</style>

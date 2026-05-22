@@ -113,8 +113,9 @@ Routes:
 - ${SITE.url}/reviewers       Reviewer model
 - ${SITE.url}/token           BOUNTY role
 - ${SITE.url}/bounties        Sample feed (preview)
-- ${SITE.url}/devlog          Build log
-- ${SITE.url}/blog            Longer posts
+- ${SITE.url}/log             Merged log (devlog + blog, single feed)
+- ${SITE.url}/devlog          Build log (legacy split surface, kept for backward compat)
+- ${SITE.url}/blog            Longer posts (legacy split surface, kept for backward compat)
 - ${SITE.url}/contact         Public channels
 - ${SITE.url}/early-access    Tally waitlist
 - ${SITE.url}/sitemap         Human sitemap
@@ -127,8 +128,9 @@ Machine-readable:
 - ${SITE.url}/llms.txt
 - ${SITE.url}/llms-full.txt
 - ${SITE.url}/site-index.json
-- ${SITE.url}/rss/devlog.xml
-- ${SITE.url}/rss/blog.xml
+- ${SITE.url}/rss/log.xml      (merged feed; preferred)
+- ${SITE.url}/rss/devlog.xml   (legacy split)
+- ${SITE.url}/rss/blog.xml     (legacy split)
 
 ## Contact
 

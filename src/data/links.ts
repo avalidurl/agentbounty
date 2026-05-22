@@ -39,6 +39,7 @@ export const TOP_NAV: NavLink[] = [
   { label: "FAQ", href: "/faq" },
   { label: "Roadmap", href: "/roadmap" },
   { label: "Status", href: "/status" },
+  { label: "Log", href: "/log" },
   { label: "Token", href: "/token" },
   { label: "Plates", href: "/claim" },
   { label: "Community", href: "/community" },
@@ -146,8 +147,7 @@ export const DOCS_LINKS: NavLink[] = [
   { label: "Reference", href: "/reference" },
   { label: "Plain-English FAQ", href: "/faq" },
   { label: "Explanation", href: "/explain" },
-  { label: "Devlog", href: "/devlog" },
-  { label: "Blog", href: "/blog" },
+  { label: "Log (devlog + blog)", href: "/log" },
   { label: "Status", href: "/status" },
   { label: "Human sitemap", href: "/sitemap" },
   { label: "llms.txt", href: "/llms.txt", external: true },
@@ -218,6 +218,7 @@ export const LEGAL_LINKS: NavLink[] = [
 ];
 
 export const FEEDS = {
+  log: "/rss/log.xml",
   devlog: "/rss/devlog.xml",
   blog: "/rss/blog.xml",
 };
