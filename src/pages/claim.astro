@@ -304,9 +304,11 @@ const toc = [
   </section>
 
   <!-- 4. AFTER MINT ------------------------------------------------------ -->
-  <section class="shell section" id="your-plate" hidden>
+  <section class="shell section" id="your-plate">
     <h2>Your plate</h2>
-    <div id="your-plate-body" class="minted-card"></div>
+    <div id="your-plate-body" class="minted-card">
+      <p class="hint">After you connect an eligible wallet and claim, your randomly assigned plate appears here.</p>
+    </div>
   </section>
 
   <!-- 5. GALLERY --------------------------------------------------------- -->
@@ -551,6 +553,8 @@ const toc = [
       background: var(--panel);
       display: flex;
       flex-direction: column;
+      min-width: 0;
+      overflow: hidden;
     }
     .plate-card .plate-img {
       display: block;
@@ -565,6 +569,7 @@ const toc = [
       display: flex;
       flex-direction: column;
       gap: 6px;
+      min-width: 0;
     }
     .plate-title {
       font-size: 13px;
@@ -575,22 +580,29 @@ const toc = [
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
       gap: var(--space-2);
       font-size: 12px;
       color: var(--muted);
+      min-width: 0;
     }
     .plate-ar {
       font-size: 11px;
       color: var(--muted);
-      word-break: break-all;
       border-top: 1px solid var(--line-soft);
       padding-top: 6px;
+      min-width: 0;
     }
     .plate-ar code {
+      display: block;
       font-size: 10.5px;
       background: transparent;
       border: 0;
       padding: 0;
+      white-space: normal;
+      word-break: break-all;
+      overflow-wrap: anywhere;
+      max-width: 100%;
     }
     .tier-badge {
       display: inline-block;
@@ -663,6 +675,53 @@ const toc = [
       .gallery-grid {
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
       }
+    }
+  </style>
+
+  <style is:global>
+    /* Gallery + minted cards are injected by client-side JS, so Astro's scoped
+       styles don't reach them — these MUST be global to actually apply. */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 16px;
+    }
+    .plate-card {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      overflow: hidden;
+    }
+    .plate-card .plate-img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      background: var(--panel-strong);
+      border-bottom: 1px solid var(--line);
+    }
+    .plate-meta { padding: 12px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+    .plate-title { font-size: 13px; font-weight: 700; line-height: 1.3; }
+    .plate-row {
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 8px; font-size: 12px; color: var(--muted); min-width: 0;
+    }
+    .plate-ar {
+      font-size: 11px; color: var(--muted);
+      border-top: 1px solid var(--line-soft); padding-top: 6px; min-width: 0;
+    }
+    .plate-ar code {
+      display: block; font-size: 10.5px; background: transparent; border: 0; padding: 0;
+      white-space: normal; word-break: break-all; overflow-wrap: anywhere; max-width: 100%;
+    }
+    .tier-badge {
+      display: inline-block; border: 1px solid var(--line); background: var(--panel-strong);
+      padding: 1px 6px; font-size: 10.5px; letter-spacing: 0.04em; text-transform: uppercase; white-space: nowrap;
+    }
+    .tier-badge[data-tier="Founder"], .tier-badge[data-tier="Polestar"] {
+      background: var(--ink); color: var(--panel); border-color: var(--ink);
     }
   </style>
 
@@ -770,8 +829,8 @@ const toc = [
       var tierFilter = document.getElementById("tier-filter");
       var moreBtn = document.getElementById("gallery-more");
       var PLATES = [];
-      var showAll = false;
-      var INITIAL = 12;
+      var showAll = true;
+      var INITIAL = 100;
 
       function plateImg(id) {
         return GATEWAY + "/" + id + ".png";
