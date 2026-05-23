@@ -983,9 +983,9 @@ const toc = [
   </script>
 
   <!-- Client logic: wallet connect + real on-chain claim via viem. ------- -->
-  <!-- is:inline keeps Astro from bundling this; viem is loaded from esm.sh -->
-  <!-- at runtime in the browser, so this must ship verbatim as a module. -->
-  <script type="module" is:inline>
+  <!-- Plain <script> (no is:inline) so Astro processes it: viem is bundled -->
+  <!-- from the local dependency and served, content-hashed, from this origin. -->
+  <script>
     import {
       createPublicClient,
       createWalletClient,
@@ -994,8 +994,8 @@ const toc = [
       decodeEventLog,
       isAddress,
       getAddress,
-    } from "https://esm.sh/viem@2";
-    import { base } from "https://esm.sh/viem@2/chains";
+    } from "viem";
+    import { base } from "viem/chains";
 
     const CONTRACT = "0x536fDf3027ae6F34499B4452aFbD9E1B872f6Bd2";
     const CHAIN_ID = 8453;
@@ -1424,12 +1424,12 @@ const toc = [
     // which tokenId (no on-chain reverse index). Show a gentle note + link.
     async function showClaimedPlate(addr) {
       yourPlateSection.hidden = false;
-      const opensea = "https://opensea.io/" + addr;
+      const opensea = "https://opensea.io/" + encodeURIComponent(addr);
       yourPlateBody.innerHTML =
         "<div>" +
         "<h3 style=\"margin-top:0;\">Already claimed</h3>" +
         "<p>This address has already claimed its plate. Check the wallet, or view its collected items on the marketplace.</p>" +
-        '<p><a class="button button-ghost" href="' + opensea + '" target="_blank" rel="noopener noreferrer">View wallet on OpenSea ↗</a></p>' +
+        '<p><a class="button button-ghost" href="' + escapeHtml(opensea) + '" target="_blank" rel="noopener noreferrer">View wallet on OpenSea ↗</a></p>' +
         "</div>";
     }
 
