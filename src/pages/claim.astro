@@ -986,6 +986,7 @@ const toc = [
   <!-- Plain <script> (no is:inline) so Astro processes it: viem is bundled -->
   <!-- from the local dependency and served, content-hashed, from this origin. -->
   <script>
+    // @ts-nocheck — plain client JS (parity with its prior is:inline form, which was untyped)
     import {
       createPublicClient,
       createWalletClient,
