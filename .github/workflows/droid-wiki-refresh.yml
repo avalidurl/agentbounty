@@ -24,13 +24,19 @@ jobs:
 
       - name: Mirror wiki to GitHub
         if: ${{ hashFiles('droid-wiki/**') != '' }}
+        env:
+          FACTORY_API_KEY: ${{ secrets.FACTORY_API_KEY }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          set -euo pipefail
           git config --global user.name "factory-droid[bot]"
           git config --global user.email "138933559+factory-droid[bot]@users.noreply.github.com"
+          git config --global "url.https://x-access-token:${GH_TOKEN}@github.com/.insteadOf" "https://github.com/"
           droid wiki-upload \
             --repo-url https://github.com/${{ github.repository }} \
             --wiki-dir ./droid-wiki \
-            --upload-to github
-        env:
-          FACTORY_API_KEY: ${{ secrets.FACTORY_API_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            --upload-to github 2>&1 | tee /tmp/wiki-upload.log
+          if grep -q "GitHub wiki sync failed" /tmp/wiki-upload.log; then
+            echo "::error::GitHub wiki sync reported failure"
+            exit 1
+          fi
