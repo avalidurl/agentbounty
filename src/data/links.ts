@@ -52,6 +52,7 @@ export const TOP_NAV: NavLink[] = [
   { label: "Status", href: "/status" },
   { label: "Log", href: "/log" },
   { label: "Token", href: "/token" },
+  { label: "Staking", href: "/staking" },
   { label: "Plates", href: "/claim" },
   { label: "Community", href: "/community" },
 ];

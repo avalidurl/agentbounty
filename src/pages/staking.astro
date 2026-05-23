@@ -1,0 +1,547 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+<BaseLayout
+  title="Staking"
+  description="A risk-underwriting token for AgentBounty. Snapshot lands 2026-05-31, 00:00 UTC. Working design, every number subject to change."
+  preview={true}
+>
+  <style is:global>
+    .redacted {
+      display: inline-block;
+      background: var(--ink);
+      color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+      padding: 0 0.25em;
+      margin: 0 0.05em;
+      border-radius: 0;
+      text-shadow: none;
+      vertical-align: baseline;
+      font-weight: inherit;
+      letter-spacing: 0.04em;
+    }
+    .redacted::selection { background: var(--ink); color: var(--ink); }
+    @media print { .redacted { background: #000; color: #000; } }
+
+    .staking-banner {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      padding: var(--space-3) var(--space-4);
+      margin-top: var(--space-5);
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .staking-banner strong { color: var(--ink); letter-spacing: 0.06em; }
+
+    .staking-hero {
+      margin: var(--space-6) 0 var(--space-7);
+      border: 1px solid var(--line);
+      background: var(--panel);
+      padding: 0;
+      overflow: hidden;
+      position: relative;
+    }
+    .staking-hero picture { display: block; }
+    .staking-hero img {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-width: 100%;
+      aspect-ratio: 3 / 2;
+      object-fit: cover;
+    }
+    .staking-hero figcaption {
+      border-top: 1px solid var(--line);
+      padding: var(--space-3) var(--space-4);
+      font-size: 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      background: var(--panel-strong);
+    }
+
+    .lead-plain {
+      font-size: 16px;
+      color: var(--muted);
+      max-width: var(--read-width);
+      margin: 0 0 var(--space-5);
+    }
+    .lead-large {
+      font-size: clamp(18px, 2vw, 22px);
+      line-height: 1.45;
+      max-width: var(--read-width);
+      margin: 0 0 var(--space-5);
+    }
+    .cmt { color: var(--muted); }
+
+    .countdown {
+      border: 1px solid var(--ink);
+      background: var(--panel-strong);
+      padding: var(--space-4) var(--space-5);
+      margin: var(--space-5) 0 var(--space-6);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: var(--space-4);
+      align-items: center;
+    }
+    .countdown .label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+      margin: 0 0 4px;
+    }
+    .countdown .target {
+      font-size: 13px;
+      color: var(--ink);
+      margin: 0;
+    }
+    .countdown-clock {
+      display: flex;
+      gap: var(--space-3);
+      align-items: baseline;
+      font-variant-numeric: tabular-nums;
+    }
+    .countdown-cell { text-align: center; min-width: 64px; }
+    .countdown-cell .num {
+      display: block;
+      font-size: clamp(28px, 4.5vw, 44px);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      color: var(--ink);
+    }
+    .countdown-cell .unit {
+      display: block;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .countdown-sep {
+      font-size: clamp(28px, 4.5vw, 44px);
+      color: var(--muted);
+      align-self: center;
+      transform: translateY(-6px);
+    }
+    @media (max-width: 640px) {
+      .countdown { grid-template-columns: 1fr; }
+      .countdown-cell { min-width: 48px; }
+    }
+
+    .change-tag {
+      display: inline-block;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 1px 6px;
+      margin-left: 6px;
+      border: 1px solid var(--muted);
+      color: var(--muted);
+      vertical-align: middle;
+    }
+
+    .locks-slider {
+      border: 1px solid var(--line);
+      padding: var(--space-4);
+      background: var(--panel-strong);
+      font-size: 13px;
+    }
+
+    .mermaid-wrap {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      padding: var(--space-4);
+      margin-bottom: var(--space-5);
+      overflow-x: auto;
+    }
+    .mermaid { font-family: var(--font-mono); }
+
+    .updates-callout {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      padding: var(--space-4);
+      margin: var(--space-5) 0;
+      font-size: 14px;
+    }
+    .updates-callout p { margin: 0 0 var(--space-2); }
+    .updates-callout p:last-child { margin-bottom: 0; }
+
+    .not-promising {
+      border-left: 3px solid var(--ink);
+      margin-left: 0;
+      padding: var(--space-3) var(--space-4);
+      background: var(--panel);
+    }
+    .not-promising ul { margin: 0; padding-left: var(--space-5); }
+    .not-promising li { margin-bottom: var(--space-2); }
+
+    .door-row {
+      display: grid;
+      grid-template-columns: minmax(120px, 1fr) 3fr;
+      gap: var(--space-3);
+      align-items: baseline;
+      padding: var(--space-3) 0;
+      border-bottom: 1px dashed var(--line-soft);
+    }
+    .door-row:last-child { border-bottom: none; }
+    .door-tag { font-family: var(--font-mono); color: var(--muted); }
+  </style>
+
+  <section class="shell" style="padding: var(--space-6) 0 var(--space-7);">
+    <div class="staking-banner" role="status">
+      <strong>DRAFT</strong> · SNAPSHOT IN 7 DAYS · ALL NUMBERS SUBJECT TO CHANGE · 2026-05-23
+    </div>
+
+    <section style="padding: var(--space-7) 0 var(--space-3);">
+      <p class="eyebrow">A note from the bench</p>
+      <h1>Introducing <span class="redacted" aria-label="redacted, name reserved for launch">CAUTIONER</span></h1>
+      <p class="lead-plain">
+        <span class="cmt">//</span> a risk-underwriting token for AgentBounty.
+        <span class="cmt">//</span> the name is held back until launch. everything else on this page is open and subject to change.
+        <span class="cmt">//</span> daily design-process updates will publish here until then.
+      </p>
+    </section>
+
+    <section class="countdown" id="snapshot-countdown" aria-live="polite">
+      <div>
+        <p class="label">Snapshot opens in</p>
+        <p class="target">Target block lands at <strong>2026-05-31 · 00:00 UTC</strong>. Clock starts at 2026-05-24 · 00:00 UTC.</p>
+      </div>
+      <div class="countdown-clock" role="timer" aria-label="time remaining to snapshot">
+        <div class="countdown-cell"><span class="num" id="cd-d">--</span><span class="unit">days</span></div>
+        <div class="countdown-sep">:</div>
+        <div class="countdown-cell"><span class="num" id="cd-h">--</span><span class="unit">hrs</span></div>
+        <div class="countdown-sep">:</div>
+        <div class="countdown-cell"><span class="num" id="cd-m">--</span><span class="unit">min</span></div>
+        <div class="countdown-sep">:</div>
+        <div class="countdown-cell"><span class="num" id="cd-s">--</span><span class="unit">sec</span></div>
+      </div>
+    </section>
+
+    <figure class="staking-hero" aria-label="13th-century manuscript illumination of a cautio pledge with anachronistic reliquary-server-rack cabinets">
+      <picture>
+        <source type="image/webp"
+                srcset="/staking/cautioner-hero-480.webp 480w,
+                        /staking/cautioner-hero-720.webp 720w,
+                        /staking/cautioner-hero-1080.webp 1080w,
+                        /staking/cautioner-hero-1440.webp 1440w"
+                sizes="(max-width: 560px) calc(100vw - 24px), (max-width: 1280px) calc(100vw - 32px), 1280px" />
+        <source type="image/png"
+                srcset="/staking/cautioner-hero-480.png 480w,
+                        /staking/cautioner-hero-720.png 720w,
+                        /staking/cautioner-hero-1080.png 1080w,
+                        /staking/cautioner-hero-1440.png 1440w"
+                sizes="(max-width: 560px) calc(100vw - 24px), (max-width: 1280px) calc(100vw - 32px), 1280px" />
+        <img src="/staking/cautioner-hero-720.png"
+             width="1440" height="960"
+             alt="A red-robed magistrate on a Gothic trefoil throne accepts a sealed parchment from a green-robed kneeling pledgor while a blue-robed scribe inscribes the cautio at a small lectern; behind them two tall Gothic reliquary-cabinets glow with rose-window LED indicators and gilt iron tracery in the manner of 13th-century manuscript illumination"
+             loading="eager" decoding="async" />
+      </picture>
+      <figcaption>Cautio with reliquary-server racks · medieval illumination after the Decretals of Gregory IX, ca. 1260</figcaption>
+    </figure>
+
+    <section style="padding-top: var(--space-3);">
+      <p class="lead-large">
+        Every bounty platform secretly hopes settlement works.
+        <span class="redacted" aria-label="redacted, name reserved for launch">CAUTIONER</span>
+        makes the hope explicit: a token whose holders stand behind every settled bounty, paid in real protocol fees for the risk they carry, and slashed if the verdict process fails.
+      </p>
+      <p style="max-width: var(--read-width); color: var(--muted);">
+        AgentBounty is the bounty market for work that needs adjudication. Sponsors fund work in USDC. Reviewers stake BOUNTY to back their verdict. But what happens when the verdict itself fails — a reviewer collusion, an oracle outage, a sponsor griefing a hunter who has already shipped? Until now: the hunter eats the loss.
+        <span class="redacted" aria-label="redacted, name reserved for launch">CAUTIONER</span> rewrites that line. Stakers are the third party who pays when the platform cannot.
+      </p>
+    </section>
+
+    <section>
+      <h2 id="snapshot">Snapshot &amp; tiered access<span class="change-tag">subject to change</span></h2>
+      <p style="color: var(--muted); max-width: var(--read-width);">
+        Snapshot block lands at <strong>2026-05-31 · 00:00 UTC</strong>. There is one snapshot, two access waves. Yield access is what differs by tier — every qualifying holder gets the airdrop, but the door to the underwriting pool opens at different hours that same day.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 28%">Tier</th>
+            <th style="width: 22%">BOUNTY held at snapshot</th>
+            <th style="width: 25%">Yield access opens</th>
+            <th>Airdrop</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Bench</strong></td>
+            <td>≥ 3,000,000,000</td>
+            <td>T+0 · 00:00 UTC · same block as snapshot</td>
+            <td>Immediate at TGE</td>
+          </tr>
+          <tr>
+            <td><strong>Gallery</strong></td>
+            <td>1,000,000,000 – 2,999,999,999</td>
+            <td>T+3h · 03:00 UTC · same day</td>
+            <td>Immediate at TGE</td>
+          </tr>
+          <tr>
+            <td>Below threshold</td>
+            <td>&lt; 1,000,000,000</td>
+            <td>Eligibility under review</td>
+            <td>Subject to mechanism design</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2 id="distribution">Distribution<span class="change-tag">subject to change</span></h2>
+      <p style="color: var(--muted); max-width: var(--read-width);">
+        100,000,000 total supply. ERC20 capped. Immutable token contract. No mint after deploy. No cliffs anywhere — everything either unlocks at TGE or vests linearly from block one. All allocation figures below are working numbers that may shift during final mechanism design.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 38%">Bucket</th>
+            <th style="width: 12%">Share</th>
+            <th style="width: 18%">Supply</th>
+            <th>Unlock</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Airdrop — Bench + Gallery tiers + friendly communities</td>
+            <td>30%</td>
+            <td>30,000,000</td>
+            <td>Immediate at TGE (yield access tiered, see above)</td>
+          </tr>
+          <tr>
+            <td>Ecosystem airdrops (quests, retroactive contributors)</td>
+            <td>10%</td>
+            <td>10,000,000</td>
+            <td>Immediate</td>
+          </tr>
+          <tr>
+            <td>Community emissions / staking rewards</td>
+            <td>15%</td>
+            <td>15,000,000</td>
+            <td>Streams across 18 epochs via emission controller</td>
+          </tr>
+          <tr>
+            <td>Protocol-owned liquidity (Uniswap V4 / USDC pair)</td>
+            <td>10%</td>
+            <td>10,000,000</td>
+            <td>At TGE, LP held by treasury multisig</td>
+          </tr>
+          <tr>
+            <td>Treasury (operational reserve)</td>
+            <td>15%</td>
+            <td>15,000,000</td>
+            <td>Liquid; multisig with 7-day timelock above $50K outflow</td>
+          </tr>
+          <tr>
+            <td>Team</td>
+            <td>10%</td>
+            <td>10,000,000</td>
+            <td>Linear vest over 12 months, <strong>zero cliff</strong></td>
+          </tr>
+          <tr>
+            <td>Reserve (audits, listings, future incentives)</td>
+            <td>10%</td>
+            <td>10,000,000</td>
+            <td>Multisig-controlled</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2 id="locks">Lock mechanic</h2>
+      <p style="color: var(--muted); max-width: var(--read-width);">
+        Stakers choose their own lock. There are no cliffs imposed by the protocol. There is no fixed unbonding period. The lock duration is itself the cooldown.
+      </p>
+      <div class="locks-slider">
+        <p style="margin: 0 0 var(--space-3);"><strong>Minimum lock:</strong> 6 hours.</p>
+        <p style="margin: 0 0 var(--space-3);"><strong>Maximum lock:</strong> unbounded.</p>
+        <p style="margin: 0 0 var(--space-3);"><strong>Multiplier curve:</strong> 1.0× at 6 hours → 4.0× at 365 days. Linear interpolation. Locks longer than 365 days yield no additional multiplier.</p>
+        <p style="margin: 0;"><strong>Stake currency:</strong> BOUNTY or USDC. Either is accepted; the same multiplier curve applies to both.</p>
+      </div>
+      <pre style="margin-top: var(--space-4);">staker self-selects:
+  6h   ─── 1.0x  ── lightest exposure, fastest exit
+  1d   ─── ~1.1x
+  7d   ─── ~1.4x
+  30d  ─── ~2.0x
+  90d  ─── ~2.7x
+  180d ─── ~3.3x
+  365d ─── 4.0x  ── full multiplier; full year of slash exposure
+  &gt;365d ── 4.0x (capped; locking forever is not gamed)</pre>
+    </section>
+
+    <section>
+      <h2 id="fees">Team operating fees</h2>
+      <p style="color: var(--muted); max-width: var(--read-width);">
+        Token unlocks alone do not fund operations. Every settled bounty produces fee revenue (reviewer fee, sponsor cancel fee, optional insurance premium). That revenue is split on-chain at settlement.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 50%">Recipient</th>
+            <th>Share of protocol fees</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="redacted" aria-label="redacted, name reserved for launch">CAUTIONER</span> stakers</td><td>60%</td></tr>
+          <tr><td>Team multisig (operational)</td><td>25%</td></tr>
+          <tr><td>Treasury</td><td>15%</td></tr>
+        </tbody>
+      </table>
+      <p style="color: var(--muted); max-width: var(--read-width); font-size: 13px;">
+        <span class="cmt">//</span> the 25% team share is paid in the bounty's own currency (USDC or BOUNTY) so the team has cash flow independent of token price. the 10% team token allocation exists for governance alignment, not for paying rent.
+      </p>
+    </section>
+
+    <section>
+      <h2 id="friendly">Friendly communities<span class="change-tag">subject to change</span></h2>
+      <p style="color: var(--muted); max-width: var(--read-width);">
+        Not partners. Communities whose work we admire and whose holders share our cultural alignment. Holding any of the tokens below above the listed threshold gives a +0.25× multiplier on the airdrop, stackable up to a 2.0× total cap. <strong>The list will grow before snapshot</strong> — more communities are being onboarded; their tokens and thresholds will appear on this page as they are confirmed.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 24%">Community</th>
+            <th style="width: 14%">Chain</th>
+            <th>Address</th>
+            <th style="width: 22%">Threshold</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Aeon Framework <small style="color: var(--muted);">(Bankr ecosystem)</small></td><td>TBC</td><td><code>TBC</code></td><td>TBC</td></tr>
+          <tr><td>MiroShark</td><td>Base</td><td><code>0xd7bc6a05a56655fb2052f742b012d1dfd66e1ba3</code></td><td>TBC</td></tr>
+          <tr><td>gitlawb</td><td>Base</td><td><code>0x5f980dcfc4c0fa3911554cf5ab288ed0eb13dba3</code></td><td>TBC</td></tr>
+          <tr><td>Surplus</td><td>TBC</td><td><code>TBC</code></td><td>TBC</td></tr>
+          <tr><td colspan="4" style="color: var(--muted); font-style: italic;">More communities to be announced before snapshot.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2 id="architecture">Architecture</h2>
+      <p style="color: var(--muted); max-width: var(--read-width);">
+        Token contract is immutable. Underwriting pool is pausable. Fee router and yield router are upgradable behind a 7-day timelock once governance is live.
+      </p>
+      <div class="mermaid-wrap">
+        <pre class="mermaid">
+flowchart LR
+  A[BOUNTY holders &ge;3B] -->|snapshot| M[Merkle airdrop]
+  F[Friendly communities] -->|+0.25x each, cap 2x| M
+  M -->|immediate| T[Token<br/>100M cap]
+  T -->|stake BOUNTY or USDC<br/>lock &ge;6h, mult 1x to 4x| P[Underwriting pool]
+  E[BountyEscrow] -->|protocol fees| R[Fee router]
+  E -->|Aave float yield| Y[Yield router]
+  R -->|60%| P
+  R -->|25%| Team[Team multisig]
+  R -->|15%| Tr[Treasury]
+  Y --> P
+  EC[Emission controller<br/>18-epoch decay] --> P
+  P -.dispute slash window.-> S[Slashing v0.2]
+        </pre>
+      </div>
+    </section>
+
+    <section>
+      <h2 id="updates">Daily design updates</h2>
+      <div class="updates-callout">
+        <p><strong>This page is the source of truth.</strong> Every working day until snapshot, the design surface gets updated here — friendly communities added, allocation numbers adjusted, mechanisms refined.</p>
+        <p>If a number changes between morning and evening, the morning version is wrong by definition. Bookmark, refresh, watch the countdown.</p>
+        <p style="color: var(--muted);"><span class="cmt">//</span> backups of each day's HTML and screenshots will be kept internally so the design process is auditable after launch.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2 id="not-promising">What we are not promising</h2>
+      <div class="not-promising">
+        <ul>
+          <li><strong>The numbers can move.</strong> Every allocation, threshold, multiplier and tier on this page is provisional and will be re-tuned during mechanism design. Final figures land in the launch post.</li>
+          <li><strong>The launch date can slip.</strong> Snapshot is in 7 days; launch may take longer. We will publish updated timing here, not on social.</li>
+          <li><strong>No audit date.</strong> Contracts will be audited before mainnet. We are not committing to a specific firm or window.</li>
+          <li><strong>No TGE date.</strong> This is a design announcement, not a sale.</li>
+          <li><strong>Slashing mechanics will publish in v0.2.</strong> The trigger conditions, dispute window, and quorum are deliberately undefined here. We will not lock them in under launch pressure.</li>
+          <li><strong>No revealed name.</strong> Token name and ticker are reserved until launch. Anyone tweeting a guess is welcome to guess wrong.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section>
+      <h2 id="where">Where this leaves you</h2>
+      <div class="door-row">
+        <span class="door-tag">[bench]</span>
+        <span>You hold ≥3,000,000,000 BOUNTY at the snapshot block (<strong>2026-05-31 · 00:00 UTC</strong>). You receive an airdrop. The underwriting pool opens at <strong>T+0</strong> — same block as snapshot.</span>
+      </div>
+      <div class="door-row">
+        <span class="door-tag">[gallery]</span>
+        <span>You hold between 1,000,000,000 and 3,000,000,000 BOUNTY at snapshot. You receive an airdrop. The underwriting pool opens for you at <strong>T+3h · 03:00 UTC</strong> the same day.</span>
+      </div>
+      <div class="door-row">
+        <span class="door-tag">[friendly community]</span>
+        <span>You hold tokens from one of the listed communities (Aeon Framework / MiroShark / gitlawb / Surplus / more soon) above threshold. Your airdrop multiplier rises by +0.25× per community held, capped at 2.0×.</span>
+      </div>
+      <div class="door-row">
+        <span class="door-tag">[sponsor]</span>
+        <span>You will pay an optional 0.5% insurance premium on each bounty post. Stakers absorb the risk. You may also stake BOUNTY/USDC yourself for fee discounts (details to follow).</span>
+      </div>
+      <div class="door-row">
+        <span class="door-tag">[reviewer]</span>
+        <span>You continue to stake BOUNTY against verdicts. Reviewer fee share is unchanged. <span class="redacted" aria-label="redacted, name reserved for launch">CAUTIONER</span> is a different role; you can hold both.</span>
+      </div>
+      <div class="door-row">
+        <span class="door-tag">[curious]</span>
+        <span>Read <a href="/how-it-works">how AgentBounty works</a>, then come back here to argue with us about the design.</span>
+      </div>
+    </section>
+  </section>
+
+  <script is:inline src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script is:inline>
+    (function () {
+      if (typeof mermaid === "undefined") return;
+      var dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      mermaid.initialize({
+        startOnLoad: true,
+        theme: dark ? 'dark' : 'neutral',
+        fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
+        flowchart: { curve: 'basis', padding: 16 }
+      });
+    })();
+  </script>
+  <script is:inline>
+    (function () {
+      var SNAPSHOT_UTC_MS = Date.UTC(2026, 4, 31, 0, 0, 0);
+      var d = document.getElementById('cd-d');
+      var h = document.getElementById('cd-h');
+      var m = document.getElementById('cd-m');
+      var s = document.getElementById('cd-s');
+      if (!d) return;
+      function pad(n) { n = Math.max(0, n | 0); return n < 10 ? '0' + n : String(n); }
+      function tick() {
+        var now = Date.now();
+        var diff = SNAPSHOT_UTC_MS - now;
+        if (diff <= 0) {
+          d.textContent = '00'; h.textContent = '00'; m.textContent = '00'; s.textContent = '00';
+          var label = document.querySelector('#snapshot-countdown .label');
+          if (label) label.textContent = 'Snapshot block has landed';
+          return;
+        }
+        var days = Math.floor(diff / 86400000);
+        var hours = Math.floor((diff % 86400000) / 3600000);
+        var mins = Math.floor((diff % 3600000) / 60000);
+        var secs = Math.floor((diff % 60000) / 1000);
+        d.textContent = pad(days);
+        h.textContent = pad(hours);
+        m.textContent = pad(mins);
+        s.textContent = pad(secs);
+        setTimeout(tick, 1000);
+      }
+      tick();
+    })();
+  </script>
+</BaseLayout>
