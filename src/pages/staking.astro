@@ -3,7 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 <BaseLayout
   title="Staking"
-  description="A risk-underwriting token for AgentBounty. Snapshot lands 2026-05-31, 00:00 UTC. Working design, every number subject to change."
+  description="A staking + yield token. Stake BOUNTY or USDC. Earn protocol fees + Aave float yield. Underwrites AgentBounty against verdict failure, compute and datacenter outages, natural catastrophes hitting infrastructure, and oracle feed failures. All triggers signed by oracle networks. Snapshot 2026-05-31 00:00 UTC. Working design, every number subject to change."
   preview={true}
 >
   <style is:global>
@@ -190,6 +190,57 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     }
     .door-row:last-child { border-bottom: none; }
     .door-tag { font-family: var(--font-mono); color: var(--muted); }
+
+    .lead-bold {
+      font-size: clamp(20px, 2.4vw, 26px);
+      line-height: 1.4;
+      margin: 0 0 var(--space-4);
+      max-width: var(--read-width);
+      color: var(--ink);
+      letter-spacing: -0.01em;
+      font-weight: 500;
+    }
+    .lead-sub {
+      font-size: 15px;
+      line-height: 1.55;
+      max-width: var(--read-width);
+      margin: 0 0 var(--space-4);
+      color: var(--ink);
+    }
+    .lead-sub strong { letter-spacing: 0.01em; }
+
+    .coverage-list {
+      list-style: none;
+      padding: 0;
+      margin: var(--space-4) 0 var(--space-3);
+      border-top: 1px solid var(--line);
+    }
+    .coverage-list li {
+      padding: var(--space-3) 0;
+      border-bottom: 1px dashed var(--line-soft);
+      font-size: 14px;
+      line-height: 1.55;
+      display: grid;
+      grid-template-columns: minmax(180px, 240px) 1fr;
+      gap: var(--space-4);
+      align-items: baseline;
+    }
+    .coverage-list li:last-child { border-bottom: 1px solid var(--line); }
+    .coverage-list .scope-name {
+      color: var(--ink);
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+    .coverage-list .trigger {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 12px;
+    }
+    @media (max-width: 720px) {
+      .coverage-list li { grid-template-columns: 1fr; gap: 4px; }
+    }
   </style>
 
   <section class="shell" style="padding: var(--space-6) 0 var(--space-7);">
@@ -198,10 +249,15 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     </div>
 
     <section style="padding: var(--space-7) 0 var(--space-3);">
-      <p class="eyebrow">A note from the bench</p>
+      <p class="eyebrow">A staking + yield token</p>
       <h1>Introducing <span class="redacted" aria-label="redacted, name reserved for launch">CAUTIONER</span></h1>
+      <p class="lead-bold">
+        Stake BOUNTY or USDC. Earn real protocol fees plus Aave float yield on the underwriting pool. Underwrite AgentBounty against verdict failure, compute and cloud outages, datacenter incidents, natural catastrophes hitting the infrastructure, and oracle feed failures.
+      </p>
+      <p class="lead-sub">
+        <strong>All trigger events are signed by oracle networks</strong> — not by our team. Chainlink, Pyth, UMA, RedStone, EAS, and provider health attestations (AWS Health, Cloudflare status) route into the slashing module through a guarded oracle aggregator. The protocol pays only when the data says it must.
+      </p>
       <p class="lead-plain">
-        <span class="cmt">//</span> a risk-underwriting token for AgentBounty.
         <span class="cmt">//</span> the name is held back until launch. everything else on this page is open and subject to change.
         <span class="cmt">//</span> daily design-process updates will publish here until then.
       </p>
@@ -249,12 +305,60 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       <p class="lead-large">
         Every bounty platform secretly hopes settlement works.
         <span class="redacted" aria-label="redacted, name reserved for launch">CAUTIONER</span>
-        makes the hope explicit: a token whose holders stand behind every settled bounty, paid in real protocol fees for the risk they carry, and slashed if the verdict process fails.
+        makes the hope explicit: holders stake to underwrite every settled bounty, every compute and oracle dependency, and the physical infrastructure behind them. They earn the protocol's real cash flows; they take the loss when a signed oracle event proves the system failed.
       </p>
       <p style="max-width: var(--read-width); color: var(--muted);">
-        AgentBounty is the bounty market for work that needs adjudication. Sponsors fund work in USDC. Reviewers stake BOUNTY to back their verdict. But what happens when the verdict itself fails — a reviewer collusion, an oracle outage, a sponsor griefing a hunter who has already shipped? Until now: the hunter eats the loss.
-        <span class="redacted" aria-label="redacted, name reserved for launch">CAUTIONER</span> rewrites that line. Stakers are the third party who pays when the platform cannot.
+        AgentBounty is the bounty market for work that needs adjudication. Sponsors fund work in USDC. Reviewers stake BOUNTY to back their verdict. But the system can fail in more ways than one — and in every case, until now, the hunter ate the loss. <span class="redacted" aria-label="redacted, name reserved for launch">CAUTIONER</span> rewrites that line. Stakers are the third party who pays when the platform cannot.
       </p>
+
+      <h2 id="coverage" style="margin-top: var(--space-6);">What the pool covers<span class="change-tag">subject to change</span></h2>
+      <p style="color: var(--muted); max-width: var(--read-width);">
+        The full enumeration. Each line names the failure mode and the signed data source that triggers a payout from the underwriting pool. Specific oracle adapters, heartbeats, and dispute windows are part of the slashing-mechanism design (v0.2); nothing on this list is committed to a particular firm or feed yet.
+      </p>
+      <ul class="coverage-list">
+        <li>
+          <span class="scope-name">Verdict failure</span>
+          <span>
+            Reviewer collusion, quorum stall, dispute deadlock, EIP-712 verdict signed under duress.
+            <span class="trigger">trigger · dispute-module attestation + EAS receipt</span>
+          </span>
+        </li>
+        <li>
+          <span class="scope-name">Compute / cloud-provider outage</span>
+          <span>
+            AWS regional outage, GCP / Azure regional incident, Cloudflare edge failure, GPU rack offline at a critical agent host during a paid run.
+            <span class="trigger">trigger · AWS Health webhook → oracle adapter · Cloudflare status API → oracle adapter</span>
+          </span>
+        </li>
+        <li>
+          <span class="scope-name">Datacenter incident</span>
+          <span>
+            Fire, flood, power loss, sub-sea cable cut, cooling failure — physical incidents at the rack a hunter or sponsor relied on.
+            <span class="trigger">trigger · provider postmortem attestation + Pyth or EAS event</span>
+          </span>
+        </li>
+        <li>
+          <span class="scope-name">Natural catastrophe (parametric)</span>
+          <span>
+            Earthquake, hurricane, flood, wildfire, grid collapse hitting the underlying infrastructure of a counterparty. Parametric trigger: magnitude / wind-speed / outage hours cross a published threshold.
+            <span class="trigger">trigger · parametric oracle (e.g. Arbol, Lloyd's CAT-bond style feed) signed onchain via Chainlink Functions</span>
+          </span>
+        </li>
+        <li>
+          <span class="scope-name">Oracle / data-feed failure</span>
+          <span>
+            Chainlink feed stale beyond heartbeat, RedStone update gap, Pyth confidence collapse, EAS attester silent through a dispute window.
+            <span class="trigger">trigger · oracle-of-oracles guard reports the silence + dispute-module flag</span>
+          </span>
+        </li>
+        <li>
+          <span class="scope-name">Sponsor griefing</span>
+          <span>
+            A sponsor disappears, refuses to settle, or rage-cancels a paid run after a hunter has shipped evidence.
+            <span class="trigger">trigger · settlement-contract state + escrow timeout</span>
+          </span>
+        </li>
+      </ul>
     </section>
 
     <section>
@@ -427,7 +531,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     <section>
       <h2 id="architecture">Architecture</h2>
       <p style="color: var(--muted); max-width: var(--read-width);">
-        Token contract is immutable. Underwriting pool is pausable. Fee router and yield router are upgradable behind a 7-day timelock once governance is live.
+        Token contract is immutable. Underwriting pool is pausable. Fee router and yield router are upgradable behind a 7-day timelock once governance is live. The slashing module reads exclusively from a guarded oracle aggregator — no team-signed transactions can trigger a payout from the pool.
       </p>
       <div class="mermaid-wrap">
         <pre class="mermaid">
@@ -443,7 +547,15 @@ flowchart LR
   R -->|15%| Tr[Treasury]
   Y --> P
   EC[Emission controller<br/>18-epoch decay] --> P
-  P -.dispute slash window.-> S[Slashing v0.2]
+  CL[Chainlink feeds + Functions] --> O
+  PY[Pyth price &amp; status] --> O
+  UMA[UMA optimistic oracle] --> O
+  RS[RedStone push feeds] --> O
+  EAS[EAS attestations] --> O
+  AWS[AWS Health / Cloudflare<br/>status webhooks] --> O
+  CAT[Parametric nat-cat feed<br/>Arbol / Lloyd's-style] --> O
+  O[Guarded oracle aggregator] -->|signed events| S
+  P -.dispute slash window.-> S[Slashing module v0.2]
         </pre>
       </div>
     </section>
