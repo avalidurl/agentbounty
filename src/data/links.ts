@@ -29,6 +29,17 @@ export const TALLY = {
   helperCopy: "The waitlist opens in a new tab via Tally.",
 };
 
+export const EXTERNAL = {
+  beta: "https://beta.agentbounty.dev",
+};
+
+export const BETA = {
+  url: EXTERNAL.beta,
+  buttonLabel: "Open beta · request access ↗",
+  helperCopy:
+    "Wallet-gated entry to the closed beta on Base Sepolia. Every wallet is rejected by default; approved wallets are added by hand after the access form.",
+};
+
 export const TOP_NAV: NavLink[] = [
   { label: "Overview", href: "/" },
   { label: "How it works", href: "/how-it-works" },

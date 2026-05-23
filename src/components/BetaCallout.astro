@@ -1,0 +1,48 @@
+---
+import { BETA } from "../data/links";
+
+export interface Props {
+  variant?: "default" | "ghost";
+  showHelper?: boolean;
+  label?: string;
+}
+
+const { variant = "default", showHelper = true, label = BETA.buttonLabel } =
+  Astro.props;
+---
+<div class="beta-callout-wrap">
+  <a
+    class={variant === "ghost" ? "button button-ghost" : "button"}
+    href={BETA.url}
+  >
+    {label}
+  </a>
+  {showHelper ? (
+    <div class="beta-helpers">
+      <p class="beta-helper">{BETA.helperCopy}</p>
+    </div>
+  ) : null}
+</div>
+
+<style>
+  .beta-callout-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .beta-helpers {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+    flex: 1 1 280px;
+  }
+  .beta-helper {
+    margin: 0;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.45;
+    max-width: 60ch;
+  }
+</style>

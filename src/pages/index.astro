@@ -2,6 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import StatusBanner from "../components/StatusBanner.astro";
 import TallyButton from "../components/TallyButton.astro";
+import BetaCallout from "../components/BetaCallout.astro";
 import OperatingLoop from "../components/diagrams/OperatingLoop.astro";
 import RoadmapTimeline from "../components/diagrams/RoadmapTimeline.astro";
 import "../styles/docs.css";
@@ -28,7 +29,10 @@ import { SITE, TOKEN } from "../data/links";
       payment.
     </p>
     <TallyButton />
-    <p style="margin-top: var(--space-3);">
+    <div style="margin-top: var(--space-5); padding-top: var(--space-5); border-top: 1px dashed var(--line-soft);">
+      <BetaCallout />
+    </div>
+    <p style="margin-top: var(--space-5);">
       <a href="/how-it-works">Read how it works →</a>
       &nbsp;·&nbsp;
       <a href="/roadmap">See the roadmap →</a>
