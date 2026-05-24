@@ -1,0 +1,482 @@
+---
+import "../styles/base.css";
+import {
+  LINKTREE,
+  LINK_SECTIONS,
+  NAME_GROUPS,
+  WALLETS,
+} from "../data/linktree";
+
+const canonical = LINKTREE.url;
+const title = `Links — ${LINKTREE.name}`;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={LINKTREE.description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="robots" content="index, follow" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={LINKTREE.description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content={LINKTREE.name} />
+    <meta name="twitter:card" content="summary" />
+    <script is:inline>
+      (function () {
+        try {
+          var stored = localStorage.getItem("agentbounty-theme");
+          if (stored === "dark" || stored === "light") {
+            document.documentElement.setAttribute("data-theme", stored);
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <style>
+      .lt-wrap {
+        width: min(540px, calc(100vw - 32px));
+        margin: 0 auto;
+        padding: var(--space-6) 0 var(--space-8);
+      }
+      .lt-top {
+        text-align: center;
+      }
+      .lt-avatar {
+        width: 76px;
+        height: 76px;
+        margin: 0 auto var(--space-4);
+        border: 1px solid var(--ink);
+        background: var(--panel-strong);
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+      }
+      .lt-avatar img {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+      .lt-name {
+        font-size: 24px;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        margin: 0;
+      }
+      .lt-tagline {
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.5;
+        margin: var(--space-2) 0 0;
+      }
+      .lt-toolbar {
+        display: flex;
+        justify-content: center;
+        margin-top: var(--space-4);
+      }
+      .lt-theme {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border: 1px solid var(--line);
+        background: var(--panel);
+        color: var(--ink);
+        padding: 6px 12px;
+        font-family: var(--font-mono);
+        font-size: 12px;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        cursor: pointer;
+        line-height: 1;
+      }
+      .lt-theme:hover {
+        background: var(--ink);
+        color: var(--bg);
+      }
+      .lt-theme:focus-visible {
+        outline: 2px solid var(--ink);
+        outline-offset: 2px;
+      }
+      .lt-theme .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        border: 1px solid currentColor;
+        background: linear-gradient(90deg, currentColor 50%, transparent 50%);
+      }
+      .lt-chipnav {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+        margin: var(--space-5) 0 var(--space-6);
+      }
+      .lt-chip {
+        border: 1px solid var(--line);
+        background: var(--panel);
+        color: var(--ink);
+        padding: 6px 10px;
+        font-size: 11px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        text-decoration: none;
+      }
+      .lt-chip:hover {
+        background: var(--ink);
+        color: var(--bg);
+      }
+      .lt-section {
+        margin-bottom: var(--space-6);
+        scroll-margin-top: var(--space-4);
+      }
+      .lt-section > h2 {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        color: var(--muted);
+        margin: 0 0 var(--space-3);
+        padding: 0;
+        border: 0;
+      }
+      .lt-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .lt-link {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-3);
+        min-height: 58px;
+        padding: var(--space-2) var(--space-4);
+        border: 1px solid var(--line);
+        background: var(--panel);
+        color: var(--ink);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 15px;
+      }
+      .lt-link:hover {
+        background: var(--ink);
+        border-color: var(--ink);
+        color: var(--bg);
+      }
+      .lt-label {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+      }
+      .lt-note {
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .lt-link:hover .lt-note {
+        color: var(--bg);
+        opacity: 0.75;
+      }
+      .lt-arrow {
+        font-size: 14px;
+        color: var(--muted);
+        flex: none;
+      }
+      .lt-link:hover .lt-arrow {
+        color: var(--bg);
+      }
+      .lt-link.is-pending {
+        background: var(--panel-strong);
+        border-style: dashed;
+        color: var(--muted);
+        cursor: default;
+        font-weight: 500;
+      }
+      .lt-soon {
+        font-size: 10px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        border: 1px solid var(--line);
+        padding: 2px 7px;
+        color: var(--muted);
+        flex: none;
+      }
+      .lt-copyrow {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-3);
+        min-height: 52px;
+        padding: var(--space-2) var(--space-4);
+        border: 1px solid var(--line);
+        background: var(--panel);
+      }
+      .lt-copyrow .val {
+        font-family: var(--font-mono);
+        font-size: 14px;
+        font-weight: 600;
+        word-break: break-all;
+        min-width: 0;
+      }
+      .lt-wallet {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-3);
+        padding: var(--space-4);
+        border: 1px solid var(--line);
+        background: var(--panel);
+      }
+      .lt-wallet.is-pending {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 58px;
+        padding: var(--space-2) var(--space-4);
+        background: var(--panel-strong);
+        border-style: dashed;
+      }
+      .lt-wallet-head {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .lt-wallet .chain {
+        font-weight: 700;
+        font-size: 15px;
+      }
+      .lt-wallet .detail {
+        font-size: 11px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .lt-addr-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .lt-addr-row {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: var(--space-3);
+        padding: 8px 10px;
+        border: 1px solid var(--line-soft);
+        background: var(--panel-strong);
+      }
+      .lt-addr {
+        font-family: var(--font-mono);
+        font-size: 12px;
+        line-height: 1.5;
+        color: var(--ink);
+        word-break: break-all;
+        min-width: 0;
+      }
+      .lt-copy {
+        border: 1px solid var(--line);
+        background: var(--panel-strong);
+        color: var(--ink);
+        min-height: 38px;
+        padding: 0 12px;
+        font-family: var(--font-mono);
+        font-size: 12px;
+        letter-spacing: 0.04em;
+        cursor: pointer;
+        flex: none;
+      }
+      .lt-copy:hover {
+        background: var(--ink);
+        color: var(--bg);
+      }
+      .lt-footer {
+        text-align: center;
+        margin-top: var(--space-7);
+        padding-top: var(--space-5);
+        border-top: 1px solid var(--line);
+        font-size: 12px;
+        color: var(--muted);
+        line-height: 1.8;
+      }
+      .lt-footer a {
+        color: var(--ink);
+        text-decoration: none;
+      }
+      .lt-footer a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="lt-wrap">
+      <header class="lt-top">
+        <div class="lt-avatar">
+          <img src="/favicon.svg" alt={`${LINKTREE.name} mark`} width="76" height="76" />
+        </div>
+        <h1 class="lt-name">{LINKTREE.name}</h1>
+        <p class="lt-tagline">{LINKTREE.tagline}</p>
+        <div class="lt-toolbar">
+          <button type="button" class="lt-theme" data-theme-toggle aria-label="Toggle color theme" aria-pressed="false">
+            <span class="dot" aria-hidden="true"></span>
+            <span class="lt-theme-text">Theme</span>
+          </button>
+        </div>
+      </header>
+
+      <nav class="lt-chipnav" aria-label="Jump to section">
+        {LINK_SECTIONS.map((s) => (
+          <a class="lt-chip" href={`#${s.id}`}>{s.title}</a>
+        ))}
+        {NAME_GROUPS.map((g) => (
+          <a class="lt-chip" href={`#${g.id}`}>{g.label}</a>
+        ))}
+        <a class="lt-chip" href="#wallets">Wallets</a>
+      </nav>
+
+      {LINK_SECTIONS.map((s) => (
+        <section class="lt-section" id={s.id}>
+          <h2>{s.title}</h2>
+          <div class="lt-stack">
+            {s.items.map((item) =>
+              item.pending || !item.href ? (
+                <span class="lt-link is-pending" aria-disabled="true">
+                  <span class="lt-label">
+                    <span>{item.label}</span>
+                    {item.note ? <span class="lt-note">{item.note}</span> : null}
+                  </span>
+                  <span class="lt-soon">Soon</span>
+                </span>
+              ) : (
+                <a
+                  class="lt-link"
+                  href={item.href}
+                  target={item.external ? "_blank" : undefined}
+                  rel={item.external ? "noopener noreferrer" : undefined}
+                >
+                  <span class="lt-label">
+                    <span>{item.label}</span>
+                    {item.note ? <span class="lt-note">{item.note}</span> : null}
+                  </span>
+                  <span class="lt-arrow" aria-hidden="true">{item.external ? "↗" : "→"}</span>
+                </a>
+              )
+            )}
+          </div>
+        </section>
+      ))}
+
+      {NAME_GROUPS.map((g) => (
+        <section class="lt-section" id={g.id}>
+          <h2>{g.label}</h2>
+          <div class="lt-stack">
+            {g.names.map((n) => (
+              <div class="lt-copyrow">
+                <span class="val">{n}</span>
+                <button type="button" class="lt-copy" data-copy={n} aria-label={`Copy ${n}`}>
+                  Copy
+                </button>
+              </div>
+            ))}
+          </div>
+        </section>
+      ))}
+
+      <section class="lt-section" id="wallets">
+        <h2>Founder Wallets</h2>
+        <div class="lt-stack">
+          {WALLETS.map((w) =>
+            w.pending || !w.addresses || w.addresses.length === 0 ? (
+              <div class="lt-wallet is-pending">
+                <span class="lt-label">
+                  <span class="chain">{w.chain}</span>
+                  {w.detail ? <span class="detail">{w.detail}</span> : null}
+                </span>
+                <span class="lt-soon">Soon</span>
+              </div>
+            ) : (
+              <div class="lt-wallet">
+                <div class="lt-wallet-head">
+                  <span class="chain">{w.chain}</span>
+                  {w.detail ? <span class="detail">{w.detail}</span> : null}
+                </div>
+                <div class="lt-addr-list">
+                  {w.addresses.map((addr) => (
+                    <div class="lt-addr-row">
+                      <code class="lt-addr">{addr}</code>
+                      <button type="button" class="lt-copy" data-copy={addr} aria-label={`Copy ${w.chain} address`}>
+                        Copy
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )
+          )}
+        </div>
+      </section>
+
+      <footer class="lt-footer">
+        <div>
+          <a href="https://agentbounty.dev">agentbounty.dev</a>
+          &nbsp;·&nbsp;
+          <a href="https://agentbounty.dev/legal/disclaimer">Disclaimer</a>
+        </div>
+        <div>&copy; {new Date().getFullYear()} {LINKTREE.name}</div>
+      </footer>
+    </main>
+
+    <script is:inline>
+      (function () {
+        var STORAGE_KEY = "agentbounty-theme";
+        var root = document.documentElement;
+
+        var btn = document.querySelector("[data-theme-toggle]");
+        function currentTheme() {
+          var attr = root.getAttribute("data-theme");
+          if (attr === "dark" || attr === "light") return attr;
+          return window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+        }
+        function syncButton(theme) {
+          if (!btn) return;
+          var next = theme === "dark" ? "light" : "dark";
+          btn.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
+          btn.setAttribute("aria-label", "Switch to " + next + " theme");
+          var text = btn.querySelector(".lt-theme-text");
+          if (text) text.textContent = next === "dark" ? "Dark" : "Light";
+        }
+        if (btn) {
+          syncButton(currentTheme());
+          btn.addEventListener("click", function () {
+            var next = currentTheme() === "dark" ? "light" : "dark";
+            root.setAttribute("data-theme", next);
+            try {
+              localStorage.setItem(STORAGE_KEY, next);
+            } catch (e) {}
+            syncButton(next);
+          });
+        }
+
+        document.querySelectorAll("[data-copy]").forEach(function (el) {
+          el.addEventListener("click", function () {
+            var value = el.getAttribute("data-copy");
+            if (!value || !navigator.clipboard) return;
+            navigator.clipboard.writeText(value).then(function () {
+              var original = el.textContent;
+              el.textContent = "Copied";
+              setTimeout(function () {
+                el.textContent = original;
+              }, 1200);
+            }).catch(function () {});
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>

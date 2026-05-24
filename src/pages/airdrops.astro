@@ -1,0 +1,81 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const routes = [
+  {
+    label: "Staking",
+    href: "/staking",
+    blurb:
+      "Stake BOUNTY or USDC, earn protocol fees plus Aave float yield, and underwrite the protocol against verdict failure. Snapshot-gated access tiers.",
+  },
+  {
+    label: "Plates",
+    href: "/claim",
+    blurb:
+      "The Plates art drop. Claim the onchain collectible tied to AgentBounty. The homepage for everything Plates.",
+  },
+];
+---
+<BaseLayout
+  title="Airdrops"
+  description="Ways to earn an AgentBounty allocation. For now: staking and the Plates art drop. Working design, every detail subject to change."
+  preview={true}
+>
+  <style>
+    .airdrop-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-4);
+      margin: var(--space-6) 0;
+    }
+    .airdrop-card {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      border: 1px solid var(--line);
+      background: var(--panel);
+      padding: var(--space-5);
+    }
+    .airdrop-card h2 {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      font-size: 20px;
+    }
+    .airdrop-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      flex: 1;
+    }
+    @media (max-width: 560px) {
+      .airdrop-cards {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <p class="eyebrow">Airdrops</p>
+  <h1>Airdrops</h1>
+  <p style="max-width: var(--read-width); color: var(--muted); font-size: 16px;">
+    Ways to earn an AgentBounty allocation. For now there are two surfaces:
+    staking and the Plates art drop. This page is the index — each route below
+    holds the working details.
+  </p>
+
+  <div class="airdrop-cards">
+    {routes.map((r) => (
+      <div class="airdrop-card">
+        <h2>{r.label}</h2>
+        <p>{r.blurb}</p>
+        <a class="button" href={r.href}>{r.label} →</a>
+      </div>
+    ))}
+  </div>
+
+  <p style="color: var(--muted); font-size: 13px;">
+    Working design. Eligibility, weights, and timing are not final and every
+    detail is subject to change. Nothing here is a promise of an allocation.
+    See <a href="/legal/disclaimer">Disclaimer</a>.
+  </p>
+</BaseLayout>
