@@ -15,10 +15,15 @@ export type LinkSection = {
   items: LinkItem[];
 };
 
+export type NameItem = {
+  name: string;
+  href?: string;
+};
+
 export type NameGroup = {
   id: string;
   label: string;
-  names: string[];
+  items: NameItem[];
 };
 
 export type WalletItem = {
@@ -141,12 +146,22 @@ export const NAME_GROUPS: NameGroup[] = [
   {
     id: "ens",
     label: "ENS",
-    names: ["gokhan.eth", "gokhanturhan.eth", "gökhanturhan.eth", "gigabvgatti.eth"],
+    items: [
+      { name: "gokhan.eth" },
+      { name: "gokhanturhan.eth" },
+      { name: "gökhanturhan.eth" },
+      { name: "gigabvgatti.eth" },
+    ],
   },
   {
     id: "basenames",
     label: "Basenames",
-    names: ["gokhanturhan.base.eth", "gökhanturhan.base.eth"],
+    items: [{ name: "gokhanturhan.base.eth" }, { name: "gökhanturhan.base.eth" }],
+  },
+  {
+    id: "zcash",
+    label: "Zcash",
+    items: [{ name: "zcash.me/gokhan", href: "https://zcash.me/gokhan" }],
   },
 ];
 

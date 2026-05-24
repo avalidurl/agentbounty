@@ -388,14 +388,21 @@ const title = `Links — ${LINKTREE.name}`;
         <section class="lt-section" id={g.id}>
           <h2>{g.label}</h2>
           <div class="lt-stack">
-            {g.names.map((n) => (
-              <div class="lt-copyrow">
-                <span class="val">{n}</span>
-                <button type="button" class="lt-copy" data-copy={n} aria-label={`Copy ${n}`}>
-                  Copy
-                </button>
-              </div>
-            ))}
+            {g.items.map((it) =>
+              it.href ? (
+                <a class="lt-link" href={it.href} target="_blank" rel="noopener noreferrer">
+                  <span class="lt-label"><span>{it.name}</span></span>
+                  <span class="lt-arrow" aria-hidden="true">↗</span>
+                </a>
+              ) : (
+                <div class="lt-copyrow">
+                  <span class="val">{it.name}</span>
+                  <button type="button" class="lt-copy" data-copy={it.name} aria-label={`Copy ${it.name}`}>
+                    Copy
+                  </button>
+                </div>
+              )
+            )}
           </div>
         </section>
       ))}
