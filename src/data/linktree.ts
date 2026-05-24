@@ -6,6 +6,7 @@ export type LinkItem = {
   external?: boolean;
   note?: string;
   pending?: boolean;
+  copy?: string;
 };
 
 export type LinkSection = {
@@ -100,7 +101,11 @@ export const LINK_SECTIONS: LinkSection[] = [
     items: [
       { label: "Plates", href: `${AB}/claim`, external: true, note: "Homepage" },
       { label: "Plates · OpenSea", href: "https://opensea.io/collection/agent-bounty-plates", external: true },
-      { label: "Plates token · DexScreener", pending: true },
+      {
+        label: "Plates token · DexScreener",
+        href: "https://dexscreener.com/base/0xc3fb623b0db5c149ab12f84ef041f52e9b123171504a3fdf41985ac96f73001b",
+        external: true,
+      },
     ],
   },
   {
@@ -112,8 +117,8 @@ export const LINK_SECTIONS: LinkSection[] = [
       { label: "Farcaster", href: "https://farcaster.xyz/gokhan", external: true },
       { label: "Telegram", href: "https://t.me/goekhanturhan", external: true },
       { label: "Lens", href: "https://firefly.social/profile/lens/gokhaneth", external: true },
-      { label: "Reddit", pending: true },
-      { label: "Discord", pending: true },
+      { label: "Reddit", href: "https://www.reddit.com/user/toombak", external: true },
+      { label: "Discord", copy: "goekhanturhan" },
       {
         label: "Human Passport",
         href: "https://base.easscan.org/address/0x36de990133D36d7E3DF9a820aA3eDE5a2320De71",

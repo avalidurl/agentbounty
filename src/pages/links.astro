@@ -223,6 +223,11 @@ const title = `Links — ${LINKTREE.name}`;
         word-break: break-all;
         min-width: 0;
       }
+      .lt-handle {
+        font-size: 12px;
+        color: var(--muted);
+        word-break: break-all;
+      }
       .lt-wallet {
         display: flex;
         flex-direction: column;
@@ -342,7 +347,17 @@ const title = `Links — ${LINKTREE.name}`;
           <h2>{s.title}</h2>
           <div class="lt-stack">
             {s.items.map((item) =>
-              item.pending || !item.href ? (
+              item.copy ? (
+                <div class="lt-copyrow">
+                  <span class="lt-label">
+                    <span>{item.label}</span>
+                    <span class="lt-handle">{item.copy}</span>
+                  </span>
+                  <button type="button" class="lt-copy" data-copy={item.copy} aria-label={`Copy ${item.label}`}>
+                    Copy
+                  </button>
+                </div>
+              ) : item.pending || !item.href ? (
                 <span class="lt-link is-pending" aria-disabled="true">
                   <span class="lt-label">
                     <span>{item.label}</span>
