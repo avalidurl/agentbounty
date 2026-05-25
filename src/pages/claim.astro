@@ -254,6 +254,12 @@ const toc = [
       eligible address.
     </p>
 
+    <div class="countdown" id="claim-countdown">
+      <div class="countdown-label">Phase 1 — direct claim closes in</div>
+      <div class="countdown-clock" id="countdown-clock">—</div>
+      <div class="countdown-sub">2026-05-27 · 03:13 UTC</div>
+    </div>
+
     <div id="claim-state" class="banner" role="status" aria-live="polite">
       Reading claim window from the contract…
     </div>
@@ -300,6 +306,14 @@ const toc = [
         </button>
         <p id="claim-status" class="result-line" role="status" aria-live="polite"></p>
       </div>
+    </div>
+
+    <div class="callout" style="margin-top: var(--space-4);">
+      <strong>What happens to unclaimed plates — phase 2.</strong> When this window
+      closes, any plates not claimed by eligible traders are swept by the dev and
+      <strong>airdropped to the largest token holders</strong>. A holder snapshot is
+      taken <strong>37 hours after</strong> phase 1 closes (≈ 2026-05-28 16:13 UTC),
+      and the airdrop follows <strong>within about 4 days</strong> of the close.
     </div>
   </section>
 
@@ -679,6 +693,21 @@ const toc = [
   </style>
 
   <style is:global>
+    .countdown {
+      text-align: center; border: 1px solid var(--ink); background: var(--panel-strong);
+      padding: 18px 16px; margin-top: var(--space-4);
+    }
+    .countdown-label {
+      font-size: 11px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted);
+    }
+    .countdown-clock {
+      font-size: clamp(1.9rem, 6vw, 3rem); font-weight: 700; letter-spacing: 0.04em;
+      line-height: 1.1; margin: 6px 0; font-variant-numeric: tabular-nums;
+    }
+    .countdown-sub {
+      font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted);
+    }
+    .countdown.closed .countdown-clock { font-size: 1.4rem; }
     /* Gallery + minted cards are injected by client-side JS, so Astro's scoped
        styles don't reach them — these MUST be global to actually apply. */
     .gallery-grid {
@@ -1083,6 +1112,8 @@ const toc = [
     const claimStatus = $("claim-status");
     const yourPlateSection = $("your-plate");
     const yourPlateBody = $("your-plate-body");
+    const bigClockEl = $("countdown-clock");
+    const bigClockBox = $("claim-countdown");
 
     function setStatus(el, text, kind) {
       el.textContent = text;
@@ -1109,17 +1140,20 @@ const toc = [
         const dl = Number(deadline);
         if (dl === 0) {
           claimsOpen = false;
+          renderBigClock(0);
           stateBox.textContent =
             "Claim opens soon — the claim window has not been opened yet. " +
             remaining.toString() + " of 99 community plates remain.";
         } else if (now > dl) {
           claimsOpen = false;
+          renderBigClock(dl);
           stateBox.textContent =
             "The claim window has closed. " + remaining.toString() +
             " plates went unclaimed. The gallery and marketplace below still work.";
         } else {
           claimsOpen = true;
           const left = dl - now;
+          renderBigClock(dl);
           stateBox.textContent =
             "Claim is open. " + remaining.toString() +
             " of 99 plates remain. Window closes in " + fmtDuration(left) + ".";
@@ -1139,6 +1173,7 @@ const toc = [
       countdownTimer = setInterval(function () {
         const now = Math.floor(Date.now() / 1000);
         const left = dl - now;
+        renderBigClock(dl);
         if (left <= 0) {
           clearInterval(countdownTimer);
           claimsOpen = false;
@@ -1163,6 +1198,33 @@ const toc = [
       parts.push(m + "m");
       parts.push(s + "s");
       return parts.join(" ");
+    }
+
+    // Big visual countdown clock. Driven by the same on-chain claimDeadline()
+    // that refreshClaimWindow() reads — never a hardcoded date.
+    function pad2(n) {
+      return (n < 10 ? "0" : "") + n;
+    }
+    function renderBigClock(dl) {
+      if (!bigClockEl) return;
+      if (!dl) {
+        // deadline 0 => openClaims() not called yet
+        bigClockEl.textContent = "Opens soon";
+        if (bigClockBox) bigClockBox.classList.remove("closed");
+        return;
+      }
+      const left = dl - Math.floor(Date.now() / 1000);
+      if (left <= 0) {
+        bigClockEl.textContent = "Phase 1 closed";
+        if (bigClockBox) bigClockBox.classList.add("closed");
+        return;
+      }
+      if (bigClockBox) bigClockBox.classList.remove("closed");
+      const d = Math.floor(left / 86400);
+      const h = Math.floor((left % 86400) / 3600);
+      const m = Math.floor((left % 3600) / 60);
+      const s = left % 60;
+      bigClockEl.textContent = d + "d " + pad2(h) + ":" + pad2(m) + ":" + pad2(s);
     }
 
     // ---- wallet connection ----
