@@ -1,33 +1,10 @@
 import rss from "@astrojs/rss";
-import { getCollection } from "astro:content";
 import type { APIContext } from "astro";
 import { SITE } from "../../data/links";
+import { getMergedLogItems } from "../../data/feed";
 
 export async function GET(context: APIContext) {
-  const devlog = (await getCollection("devlog", ({ data }) => !data.draft)).map(
-    (entry) => ({
-      title: entry.data.title,
-      description: entry.data.description,
-      pubDate: entry.data.pubDate,
-      link: `/devlog/${entry.id}/`,
-      categories: ["devlog", ...entry.data.tags],
-    }),
-  );
-
-  const blog = (await getCollection("blog", ({ data }) => !data.draft)).map(
-    (entry) => ({
-      title: entry.data.title,
-      description: entry.data.description,
-      pubDate: entry.data.pubDate,
-      link: `/blog/${entry.id}/`,
-      categories: ["blog", ...entry.data.tags],
-    }),
-  );
-
-  const items = [...devlog, ...blog].sort(
-    (a, b) => b.pubDate.valueOf() - a.pubDate.valueOf(),
-  );
-
+  const items = await getMergedLogItems();
   const latest = (items[0]?.pubDate ?? new Date()).toUTCString();
 
   return rss({
