@@ -34,6 +34,7 @@ export async function GET(context: APIContext) {
       "Merged feed: short build notes and longer posts about AgentBounty, adjudication, USDC settlement, and progressive autonomy.",
     site: context.site ?? SITE.url,
     items,
-    customData: "<language>en-us</language>",
+    xmlns: { atom: "http://www.w3.org/2005/Atom" },
+    customData: `<language>en-us</language><atom:link href="${new URL("/rss/log.xml", context.site ?? SITE.url).href}" rel="self" type="application/rss+xml"/>`,
   });
 }
