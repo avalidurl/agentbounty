@@ -149,16 +149,21 @@ const title = `Links — ${LINKTREE.name}`;
       .lt-link {
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        justify-content: center;
         gap: var(--space-3);
         min-height: 58px;
-        padding: var(--space-2) var(--space-4);
+        padding: var(--space-2) var(--space-7);
         border: 1px solid var(--line);
         background: var(--panel);
         color: var(--ink);
         text-decoration: none;
         font-weight: 600;
         font-size: 15px;
+        position: relative;
+      }
+      .lt-link .lt-label {
+        align-items: center;
+        text-align: center;
       }
       .lt-link:hover {
         background: var(--ink);
@@ -183,9 +188,18 @@ const title = `Links — ${LINKTREE.name}`;
         opacity: 0.75;
       }
       .lt-arrow {
+        position: absolute;
+        right: var(--space-4);
+        top: 50%;
+        transform: translateY(-50%);
         font-size: 14px;
         color: var(--muted);
-        flex: none;
+      }
+      .lt-link .lt-soon {
+        position: absolute;
+        right: var(--space-4);
+        top: 50%;
+        transform: translateY(-50%);
       }
       .lt-link:hover .lt-arrow {
         color: var(--bg);
