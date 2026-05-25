@@ -242,6 +242,19 @@ const title = `Links — ${LINKTREE.name}`;
         color: var(--muted);
         word-break: break-all;
       }
+      .lt-rowlink {
+        flex: 1;
+        min-width: 0;
+        text-decoration: none;
+        color: var(--ink);
+      }
+      .lt-rowlink:hover {
+        color: var(--accent-go);
+      }
+      .lt-rowlink-arrow {
+        color: var(--muted);
+        font-size: 12px;
+      }
       .lt-wallet {
         display: flex;
         flex-direction: column;
@@ -361,7 +374,24 @@ const title = `Links — ${LINKTREE.name}`;
           <h2>{s.title}</h2>
           <div class="lt-stack">
             {s.items.map((item) =>
-              item.copy ? (
+              item.href && item.copy ? (
+                <div class="lt-copyrow">
+                  <a
+                    class="lt-rowlink"
+                    href={item.href}
+                    target={item.external ? "_blank" : undefined}
+                    rel={item.external ? "noopener noreferrer" : undefined}
+                  >
+                    <span class="lt-label">
+                      <span>{item.label} <span class="lt-rowlink-arrow" aria-hidden="true">↗</span></span>
+                      <span class="lt-handle">{item.copy}</span>
+                    </span>
+                  </a>
+                  <button type="button" class="lt-copy" data-copy={item.copy} aria-label={`Copy ${item.label}`}>
+                    Copy
+                  </button>
+                </div>
+              ) : item.copy ? (
                 <div class="lt-copyrow">
                   <span class="lt-label">
                     <span>{item.label}</span>
