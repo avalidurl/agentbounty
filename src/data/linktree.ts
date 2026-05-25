@@ -123,7 +123,7 @@ export const LINK_SECTIONS: LinkSection[] = [
       { label: "Telegram", href: "https://t.me/goekhanturhan", external: true },
       { label: "Lens", href: "https://firefly.social/profile/lens/gokhaneth", external: true },
       { label: "Reddit", href: "https://www.reddit.com/user/toombak", external: true },
-      { label: "Discord", copy: "goekhanturhan" },
+      { label: "Discord", href: "https://discord.com/users/468471856773464075", external: true },
       {
         label: "Human Passport",
         href: "https://base.easscan.org/address/0x36de990133D36d7E3DF9a820aA3eDE5a2320De71",
