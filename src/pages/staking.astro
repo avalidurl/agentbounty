@@ -255,7 +255,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         Stake BOUNTY or USDC. Earn real protocol fees plus Aave float yield on the underwriting pool. Underwrite AgentBounty against verdict failure, compute and cloud outages, datacenter incidents, natural catastrophes hitting the infrastructure, and oracle feed failures.
       </p>
       <p class="lead-sub">
-        <strong>All trigger events are signed by oracle networks</strong> — not by our team. Chainlink, Pyth, UMA, RedStone, EAS, and provider health attestations (AWS Health, Cloudflare status) route into the slashing module through a guarded oracle aggregator. The protocol pays only when the data says it must.
+        <strong>All trigger events are signed by oracle networks</strong> — not by our team. Chainlink Functions is the primary oracle: it re-runs verdict checks, fetches provider health attestations (AWS Health, Cloudflare status), and aggregates parametric nat-cat feeds. Pyth, RedStone, and EAS attestations operate as secondary aggregators feeding the same guarded module. The protocol pays only when the data says it must.
+      </p>
+      <p class="lead-sub">
+        <span class="redacted" aria-label="redacted, name reserved for launch">CAUTIONER</span> stakers underwrite the <strong>insurance tier</strong> that sponsors opt into when they want guaranteed-correct settlement on high-value bounties — premium-paying sponsors fund staker yield directly, in exchange for protocol-backed refunds when the verdict path fails. This is the medium-term wedge the staking pool is built around.
       </p>
       <p class="lead-plain">
         <span class="cmt">//</span> the name is held back until launch. everything else on this page is open and subject to change.
@@ -547,14 +550,13 @@ flowchart LR
   R -->|15%| Tr[Treasury]
   Y --> P
   EC[Emission controller<br/>18-epoch decay] --> P
-  CL[Chainlink feeds + Functions] --> O
-  PY[Pyth price &amp; status] --> O
-  UMA[UMA optimistic oracle] --> O
-  RS[RedStone push feeds] --> O
-  EAS[EAS attestations] --> O
-  AWS[AWS Health / Cloudflare<br/>status webhooks] --> O
-  CAT[Parametric nat-cat feed<br/>Arbol / Lloyd's-style] --> O
-  O[Guarded oracle aggregator] -->|signed events| S
+  CL[Chainlink Data Feeds + Functions<br/>primary oracle for parametric triggers,<br/>verdict re-runs, dispute resolution] --> O
+  PY[Pyth price &amp; status<br/>secondary aggregator] --> O
+  RS[RedStone push feeds<br/>secondary aggregator] --> O
+  EAS[EAS attestations<br/>reviewer reputation + dispute receipts] --> O
+  AWS[AWS Health / Cloudflare<br/>status webhooks → Chainlink Functions] --> O
+  CAT[Parametric nat-cat feed<br/>Arbol / Lloyd's-style → Chainlink Functions] --> O
+  O[Guarded oracle aggregator<br/>Chainlink-Functions-native] -->|signed events| S
   P -.dispute slash window.-> S[Slashing module v0.2]
         </pre>
       </div>
