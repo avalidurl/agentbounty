@@ -1,92 +1,74 @@
 ---
 import DocsLayout from "../layouts/DocsLayout.astro";
 import TallyButton from "../components/TallyButton.astro";
-import {
-  COMMUNITY_CHANNELS,
-  COMMUNITY_GROUP_LABELS,
-  TALLY,
-} from "../data/links";
-import type { CommunityGroupKey } from "../data/links";
-
-const order: CommunityGroupKey[] = [
-  "chat",
-  "broadcast",
-  "writing",
-  "code",
-  "waitlist",
-];
-
-const grouped = order.map((key) => ({
-  key,
-  label: COMMUNITY_GROUP_LABELS[key],
-  channels: COMMUNITY_CHANNELS.filter((c) => c.group === key),
-}));
+import { TALLY } from "../data/links";
+import { LINK_SECTIONS, NAME_GROUPS } from "../data/linktree";
 
 const toc = [
-  { label: "Chat", anchor: "chat" },
-  { label: "Broadcast", anchor: "broadcast" },
-  { label: "Long-form writing", anchor: "writing" },
-  { label: "Code", anchor: "code" },
-  { label: "Waitlist", anchor: "waitlist" },
-  { label: "What these are not", anchor: "not" },
+  ...LINK_SECTIONS.map((s) => ({ label: s.title, anchor: s.id })),
+  ...NAME_GROUPS.map((g) => ({ label: g.label, anchor: g.id })),
+  { label: "Beta waitlist", anchor: "waitlist" },
 ];
 ---
 <DocsLayout
   title="Community"
-  description="Community channels for AgentBounty. Chat, broadcast, and long-form writing surfaces. None of these is the product platform."
+  description="Every AgentBounty link in one place — the protocol, chats, forums, blogs, the Plates art drop, founder accounts, and on-chain identity."
   toc={toc}
   eyebrow="Community"
 >
   <p class="lead">
-    Community surfaces are for conversation, questions, and updates. None of
-    them is the product platform. The bounty loop runs through the website
-    and the curated alpha intake.
+    Every AgentBounty surface in one place — the same set as the
+    <a href="/links">links page</a> (founder wallet addresses live on the links
+    page only). None of these chat or social surfaces is the product platform;
+    the bounty loop runs through the website and the curated intake.
   </p>
 
-  {grouped.map((g) => (
+  {LINK_SECTIONS.map((section) => (
     <section>
-      <h2 id={g.key}>{g.label}</h2>
-      <table>
-        <thead>
-          <tr>
-            <th style="width: 30%;">Surface</th>
-            <th style="width: 25%;">Cadence</th>
-            <th>Notes</th>
-          </tr>
-        </thead>
-        <tbody>
-          {g.channels.map((c) => (
-            <tr>
-              <td>
-                <a href={c.href} target="_blank" rel="noopener noreferrer">
-                  {c.label}
-                </a>
-              </td>
-              <td>{c.cadence}</td>
-              <td>{c.description}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <h2 id={section.id}>{section.title}</h2>
+      <ul>
+        {section.items.map((l) => (
+          <li>
+            {l.href ? (
+              <a
+                href={l.href}
+                target={l.external ? "_blank" : undefined}
+                rel={l.external ? "noopener noreferrer" : undefined}
+              >
+                {l.label}
+              </a>
+            ) : (
+              <span>{l.label}</span>
+            )}
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))}
+
+  {NAME_GROUPS.map((group) => (
+    <section>
+      <h2 id={group.id}>{group.label}</h2>
+      <ul>
+        {group.items.map((it) => (
+          <li>
+            {it.href ? (
+              <a href={it.href} target="_blank" rel="noopener noreferrer">{it.name}</a>
+            ) : (
+              <code>{it.name}</code>
+            )}
+          </li>
+        ))}
+      </ul>
     </section>
   ))}
 
   <section>
-    <h2 id="waitlist-cta">Join the beta release waitlist</h2>
+    <h2 id="waitlist">Join the beta release waitlist</h2>
     <p>
       The waitlist is the only intake path. It is an external Tally form at
       <a href={TALLY.url} target="_blank" rel="noopener noreferrer">{TALLY.url}</a>.
     </p>
     <TallyButton />
-  </section>
-
-  <section>
-    <h2 id="not">What these are not</h2>
-    <ul>
-      <li>They are not the bounty loop.</li>
-      <li>They are not the reviewer admission channel.</li>
-      <li>They are not authoritative for product roadmap or status; see <a href="/roadmap">Roadmap</a> and <a href="/status">Status</a>.</li>
-      <li>Farcaster is one optional distribution channel only. It is not the canonical product platform.</li>
-    </ul>
   </section>
 </DocsLayout>

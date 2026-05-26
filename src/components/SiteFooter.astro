@@ -3,10 +3,10 @@ import {
   SITE,
   PROTOCOL_LINKS,
   DOCS_LINKS,
-  CONTACT_LINKS,
   LEGAL_LINKS,
   TALLY,
 } from "../data/links";
+import { LINK_SECTIONS, NAME_GROUPS } from "../data/linktree";
 
 const year = new Date().getFullYear();
 ---
@@ -49,6 +49,9 @@ const year = new Date().getFullYear();
   }
   .footer-group a:hover {
     text-decoration: underline;
+  }
+  .footer-name {
+    color: var(--muted);
   }
   .footer-meta {
     display: flex;
@@ -120,22 +123,44 @@ const year = new Date().getFullYear();
           ))}
         </ul>
       </div>
-      <div class="footer-group">
-        <h5>Community</h5>
-        <ul>
-          {CONTACT_LINKS.map((l) => (
-            <li>
-              <a
-                href={l.href}
-                target={l.external ? "_blank" : undefined}
-                rel={l.external ? "noopener noreferrer" : undefined}
-              >
-                {l.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
+      {LINK_SECTIONS.map((section) => (
+        <div class="footer-group">
+          <h5>{section.title}</h5>
+          <ul>
+            {section.items.map((l) => (
+              <li>
+                {l.href ? (
+                  <a
+                    href={l.href}
+                    target={l.external ? "_blank" : undefined}
+                    rel={l.external ? "noopener noreferrer" : undefined}
+                  >
+                    {l.label}
+                  </a>
+                ) : (
+                  <span class="footer-name">{l.label}</span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+      {NAME_GROUPS.map((group) => (
+        <div class="footer-group">
+          <h5>{group.label}</h5>
+          <ul>
+            {group.items.map((it) => (
+              <li>
+                {it.href ? (
+                  <a href={it.href} target="_blank" rel="noopener noreferrer">{it.name}</a>
+                ) : (
+                  <span class="footer-name">{it.name}</span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
       <div class="footer-group">
         <h5>Legal</h5>
         <ul>
