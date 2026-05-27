@@ -28,7 +28,9 @@ One snapshot: **2026-06-03 · 00:00 UTC**. Whatever qualifying assets you hold i
 - **BOUNTY holders (tiered).** Your BOUNTY balance sets your tier (details in Q4).
 - **Agent Bounty Plates holders (NFT).** Hold **≥ 1 Plate** (the 100-piece ERC-721 on Base, `0x536fDf3027ae6F34499B4452aFbD9E1B872f6Bd2`) → airdrop recipient. Browse or claim at [/claim](/claim).
 
-**Then a multiplier — not a way in by itself.** Holding **Base-ecosystem AI-agent community tokens** boosts the airdrop you *already* qualified for: each listed token you hold above its threshold multiplies it **+0.25× (×1.25)**, stacking up to a **×2.0 cap**. Current list: **Aeon Framework** (Bankr ecosystem), **MiroShark**, **gitlawb**, **Surplus** — more before snapshot. (A community token with no BOUNTY and no Plate has nothing to multiply.)
+**Then a multiplier — not a way in by itself.** Holding **Base-ecosystem AI-agent community tokens** boosts the airdrop you *already* qualified for: each listed token you hold above its threshold multiplies it **+0.25× (×1.25)**, stacking up to a **×2.0 cap**. Current list: **Aeon Framework** (Bankr ecosystem), **MiroShark**, **gitlawb**, **Surplus** — more before snapshot. (The multiplier needs a base: you qualify with **BOUNTY *or* a Plate** — either one is enough — and community tokens then multiply it. A community token on its own has nothing to multiply.)
+
+**Are you a Base AI-agent community and want on the list?** My DMs are always open — message me on X at [@goekhan](https://x.com/goekhan) and we'll work something out.
 
 ## 4. What do the BOUNTY tiers mean exactly?
 
