@@ -254,13 +254,19 @@ const toc = [
       eligible address.
     </p>
 
-    <div class="countdown" id="claim-countdown">
+    <div class="banner banner-closed" role="status">
+      <strong>Claims closed 2026-05-27 · 03:13 UTC.</strong> Phase 1 ended; unclaimed
+      plates are being swept and airdropped to the largest current BOUNTY holders.
+      <a href="https://dune.com/gokhan/agentbounty">View live status on the dashboard ↗</a>
+    </div>
+
+    <div class="countdown" id="claim-countdown" hidden>
       <div class="countdown-label">Phase 1 — direct claim closes in</div>
       <div class="countdown-clock" id="countdown-clock">—</div>
       <div class="countdown-sub">2026-05-27 · 03:13 UTC</div>
     </div>
 
-    <div id="claim-state" class="banner" role="status" aria-live="polite">
+    <div id="claim-state" class="banner" role="status" aria-live="polite" hidden>
       Reading claim window from the contract…
     </div>
 
@@ -301,19 +307,24 @@ const toc = [
 
       <!-- Step: claim -->
       <div class="claim-step">
-        <button id="claim-btn" class="button" type="button" disabled>
-          Claim (random plate)
+        <button id="claim-btn" class="button button-struck" type="button" disabled aria-disabled="true">
+          <s>Claim (random plate)</s>
         </button>
-        <p id="claim-status" class="result-line" role="status" aria-live="polite"></p>
+        <p class="result-line">
+          Phase 1 has ended. Track the snapshot, sweep, and airdrop on the
+          <a href="https://dune.com/gokhan/agentbounty">AgentBounty dashboard ↗</a>.
+        </p>
       </div>
     </div>
 
     <div class="callout" style="margin-top: var(--space-4);">
-      <strong>What happens to unclaimed plates — phase 2.</strong> When this window
-      closes, any plates not claimed by eligible traders are swept by the dev and
-      <strong>airdropped to the largest token holders</strong>. A holder snapshot is
-      taken <strong>37 hours after</strong> phase 1 closes (≈ 2026-05-28 16:13 UTC),
-      and the airdrop follows <strong>within about 4 days</strong> of the close.
+      <strong>Phase 2 — unclaimed plates.</strong> A snapshot of the largest current
+      BOUNTY holders is being captured at <strong>2026-05-27 · 14:00 UTC</strong>.
+      The 91 unclaimed plates are then swept and airdropped to the top-91 holders
+      (founder included by manual rule, lowest-balance bumped if needed), with
+      rarity-tier matching: highest-balance holders receive the rarest swept plates.
+      Live progress on the
+      <a href="https://dune.com/gokhan/agentbounty">AgentBounty dashboard ↗</a>.
     </div>
   </section>
 
