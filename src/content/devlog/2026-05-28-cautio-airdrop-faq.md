@@ -21,13 +21,14 @@ CAUTIO is the token of AgentBounty's on-chain **insurance** layer — not a "num
 
 One snapshot: **2026-06-03 · 00:00 UTC**. Whatever qualifying assets you hold in your wallet at that block is what counts. There's nothing to pre-register — just hold.
 
-## 3. Who is eligible? The three ways to qualify
+## 3. Who is eligible?
 
-Hold **any** of these at the snapshot and you're in. Multipliers stack, capped at **2.0×**.
+**Two ways to qualify** for the airdrop — hold either at the snapshot:
 
-- **Route 1 — BOUNTY holders (tiered).** Your BOUNTY balance sets your tier (details in Q4).
-- **Route 2 — Base-ecosystem AI-agent communities.** Hold a listed community token above its threshold → **+0.25× per community**, up to the 2.0× cap. Current list: **Aeon Framework** (Bankr ecosystem), **MiroShark**, **gitlawb**, **Surplus** — more added before snapshot.
-- **Route 3 — Agent Bounty Plates holders (NFT).** Hold **≥ 1 Plate** (the 100-piece ERC-721 on Base, `0x536fDf3027ae6F34499B4452aFbD9E1B872f6Bd2`) → airdrop recipient. Browse or claim at [/claim](/claim).
+- **BOUNTY holders (tiered).** Your BOUNTY balance sets your tier (details in Q4).
+- **Agent Bounty Plates holders (NFT).** Hold **≥ 1 Plate** (the 100-piece ERC-721 on Base, `0x536fDf3027ae6F34499B4452aFbD9E1B872f6Bd2`) → airdrop recipient. Browse or claim at [/claim](/claim).
+
+**Then a multiplier — not a way in by itself.** Holding **Base-ecosystem AI-agent community tokens** boosts the airdrop you *already* qualified for: each listed token you hold above its threshold multiplies it **+0.25× (×1.25)**, stacking up to a **×2.0 cap**. Current list: **Aeon Framework** (Bankr ecosystem), **MiroShark**, **gitlawb**, **Surplus** — more before snapshot. (A community token with no BOUNTY and no Plate has nothing to multiply.)
 
 ## 4. What do the BOUNTY tiers mean exactly?
 
