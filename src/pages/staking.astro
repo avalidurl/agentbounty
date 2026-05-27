@@ -368,11 +368,13 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     <section>
       <h2 id="snapshot">How to be Eligible for the CAUTIO airdrop?<span class="change-tag">subject to change</span></h2>
-      <p style="color: var(--muted); max-width: var(--read-width);">
-        Snapshot block lands at <strong>2026-05-31 · 00:00 UTC</strong>. There is one snapshot, two access waves. Yield access is what differs by tier — every qualifying holder gets the airdrop, but the door to the underwriting pool opens at different hours that same day.
+      <p class="lead-sub">
+        One snapshot — <strong>2026-05-31 · 00:00 UTC</strong>. <strong>Three ways to qualify</strong>: hold any of the below in your wallet at that block. Every qualifying wallet receives the airdrop; community multipliers stack up to a <strong>2.0× cap</strong>. The only thing tiered is <em>when</em> you can start earning staking yield — not whether you get the airdrop.
       </p>
+
+      <h3>1 · BOUNTY holders <span class="cmt">— tiered</span></h3>
       <p style="color: var(--muted); max-width: var(--read-width);">
-        <strong>Agent Bounty Plates holders are an airdrop recipient category.</strong> Anyone holding an <a href="/claim">Agent Bounty Plate</a> (the 100-piece ERC-721 on Base, <code>0x536fDf3027ae6F34499B4452aFbD9E1B872f6Bd2</code>) at the snapshot block is included in the airdrop alongside the Bench and Gallery tiers.
+        How much BOUNTY you hold at the snapshot sets your tier and the hour your underwriting-pool (yield) access opens. Both tiers receive the airdrop immediately at TGE.
       </p>
       <table>
         <thead>
@@ -404,10 +406,40 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           </tr>
         </tbody>
       </table>
+
+      <h3 id="friendly">2 · Base-ecosystem AI-agent communities</h3>
+      <p style="color: var(--muted); max-width: var(--read-width);">
+        Not partners — Base AI-agent communities whose work we admire and whose holders share our cultural alignment. Hold any listed token above its threshold and your airdrop gains a <strong>+0.25× multiplier per community</strong>, stackable to the 2.0× cap. <strong>The list grows before snapshot</strong> — tokens and thresholds appear here as they are confirmed.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 24%">Community</th>
+            <th style="width: 14%">Chain</th>
+            <th>Address</th>
+            <th style="width: 22%">Threshold</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Aeon Framework <small style="color: var(--muted);">(Bankr ecosystem)</small></td><td>TBC</td><td><code>TBC</code></td><td>TBC</td></tr>
+          <tr><td>MiroShark</td><td>Base</td><td><code>0xd7bc6a05a56655fb2052f742b012d1dfd66e1ba3</code></td><td>TBC</td></tr>
+          <tr><td>gitlawb</td><td>Base</td><td><code>0x5f980dcfc4c0fa3911554cf5ab288ed0eb13dba3</code></td><td>TBC</td></tr>
+          <tr><td>Surplus</td><td>TBC</td><td><code>TBC</code></td><td>TBC</td></tr>
+          <tr><td colspan="4" style="color: var(--muted); font-style: italic;">More communities to be announced before snapshot.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>3 · Agent Bounty Plates holders <span class="cmt">— NFT</span></h3>
+      <p style="color: var(--muted); max-width: var(--read-width);">
+        Hold at least one <a href="/claim">Agent Bounty Plate</a> — the 100-piece ERC-721 on Base, <code>0x536fDf3027ae6F34499B4452aFbD9E1B872f6Bd2</code> — at the snapshot block, and you're an airdrop recipient alongside the BOUNTY tiers.
+      </p>
       <div class="updates-callout" style="border-color: var(--ink);">
         <p><strong>One official channel — this site.</strong> The CAUTIO token contract address(es) will be published <strong>here, on this page, before launch</strong>. Until then, no contract address exists.</p>
         <p><strong>Assume every other source is a scam.</strong> Any CAUTIO address, presale, claim link, or "airdrop" posted on X, Telegram, Discord, email, or DMs — including accounts impersonating us — is fake. We will never DM you a claim link or ask you to connect your wallet anywhere but here. Always check the URL reads <strong>agentbounty.dev</strong>.</p>
       </div>
+      <p style="color: var(--muted); max-width: var(--read-width); margin-top: var(--space-4);">
+        New here? The full <a href="/devlog/2026-05-28-cautio-airdrop-faq/">10-question airdrop FAQ</a> walks through all of this — the three routes, the token, the risks — in plain English.
+      </p>
     </section>
 
     <section>
@@ -426,7 +458,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         </thead>
         <tbody>
           <tr>
-            <td>Airdrop — Bench + Gallery tiers + Agent Bounty Plates holders + friendly communities</td>
+            <td>Airdrop — BOUNTY tiers + Base AI-agent communities + Agent Bounty Plates holders</td>
             <td>30%</td>
             <td>30,000,000</td>
             <td>Immediate at TGE (yield access tiered, see above)</td>
@@ -516,29 +548,6 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       </p>
     </section>
 
-    <section>
-      <h2 id="friendly">Friendly communities<span class="change-tag">subject to change</span></h2>
-      <p style="color: var(--muted); max-width: var(--read-width);">
-        Not partners. Communities whose work we admire and whose holders share our cultural alignment. Holding any of the tokens below above the listed threshold gives a +0.25× multiplier on the airdrop, stackable up to a 2.0× total cap. <strong>The list will grow before snapshot</strong> — more communities are being onboarded; their tokens and thresholds will appear on this page as they are confirmed.
-      </p>
-      <table>
-        <thead>
-          <tr>
-            <th style="width: 24%">Community</th>
-            <th style="width: 14%">Chain</th>
-            <th>Address</th>
-            <th style="width: 22%">Threshold</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td>Aeon Framework <small style="color: var(--muted);">(Bankr ecosystem)</small></td><td>TBC</td><td><code>TBC</code></td><td>TBC</td></tr>
-          <tr><td>MiroShark</td><td>Base</td><td><code>0xd7bc6a05a56655fb2052f742b012d1dfd66e1ba3</code></td><td>TBC</td></tr>
-          <tr><td>gitlawb</td><td>Base</td><td><code>0x5f980dcfc4c0fa3911554cf5ab288ed0eb13dba3</code></td><td>TBC</td></tr>
-          <tr><td>Surplus</td><td>TBC</td><td><code>TBC</code></td><td>TBC</td></tr>
-          <tr><td colspan="4" style="color: var(--muted); font-style: italic;">More communities to be announced before snapshot.</td></tr>
-        </tbody>
-      </table>
-    </section>
 
     <section>
       <h2 id="architecture">Architecture</h2>
