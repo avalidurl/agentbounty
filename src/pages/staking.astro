@@ -369,6 +369,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       <p style="color: var(--muted); max-width: var(--read-width);">
         Snapshot block lands at <strong>2026-05-31 · 00:00 UTC</strong>. There is one snapshot, two access waves. Yield access is what differs by tier — every qualifying holder gets the airdrop, but the door to the underwriting pool opens at different hours that same day.
       </p>
+      <p style="color: var(--muted); max-width: var(--read-width);">
+        <strong>Agent Bounty Plates holders are an airdrop recipient category.</strong> Anyone holding an <a href="/claim">Agent Bounty Plate</a> (the 100-piece ERC-721 on Base, <code>0x536fDf3027ae6F34499B4452aFbD9E1B872f6Bd2</code>) at the snapshot block is included in the airdrop alongside the Bench and Gallery tiers.
+      </p>
       <table>
         <thead>
           <tr>
@@ -417,7 +420,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         </thead>
         <tbody>
           <tr>
-            <td>Airdrop — Bench + Gallery tiers + friendly communities</td>
+            <td>Airdrop — Bench + Gallery tiers + Agent Bounty Plates holders + friendly communities</td>
             <td>30%</td>
             <td>30,000,000</td>
             <td>Immediate at TGE (yield access tiered, see above)</td>
@@ -598,6 +601,10 @@ flowchart LR
       <div class="door-row">
         <span class="door-tag">[friendly community]</span>
         <span>You hold tokens from one of the listed communities (Aeon Framework / MiroShark / gitlawb / Surplus / more soon) above threshold. Your airdrop multiplier rises by +0.25× per community held, capped at 2.0×.</span>
+      </div>
+      <div class="door-row">
+        <span class="door-tag">[plate holder]</span>
+        <span>You hold an <a href="/claim">Agent Bounty Plate</a> (ERC-721 on Base) at the snapshot block. You're an airdrop recipient.</span>
       </div>
       <div class="door-row">
         <span class="door-tag">[sponsor]</span>
