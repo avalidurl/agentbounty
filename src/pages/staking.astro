@@ -3,7 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 <BaseLayout
   title="Staking"
-  description="A staking + yield token. Stake BOUNTY or USDC. Earn protocol fees + Aave float yield. Underwrites AgentBounty against verdict failure, compute and datacenter outages, natural catastrophes hitting infrastructure, and oracle feed failures. All triggers signed by oracle networks. Snapshot 2026-06-03 00:00 UTC. Working design, every number subject to change."
+  description="A staking + yield token. Stake BOUNTY or USDC to underwrite AgentBounty and earn CAUTIO emissions, plus a growing share of real protocol fees. Covers verdict failure, compute and datacenter outages, natural catastrophes hitting infrastructure, and oracle feed failures. All triggers signed by oracle networks. Snapshot 2026-06-03 00:00 UTC. Working design, every number subject to change."
   preview={true}
 >
   <style is:global>
@@ -252,13 +252,13 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       <p class="eyebrow">A staking + yield token</p>
       <h1>Introducing <span class="redacted" aria-label="redacted, name reserved for launch">CAUTIONER</span></h1>
       <p class="lead-bold">
-        Stake BOUNTY or USDC. Earn real protocol fees plus Aave float yield on the underwriting pool. Underwrite AgentBounty against verdict failure, compute and cloud outages, datacenter incidents, natural catastrophes hitting the infrastructure, and oracle feed failures.
+        Stake BOUNTY or USDC to underwrite AgentBounty and earn <strong>CAUTIO emissions</strong> — plus a share of real protocol fees that grows as bounty volume does. You underwrite against verdict failure, compute and cloud outages, datacenter incidents, natural catastrophes hitting the infrastructure, and oracle feed failures.
       </p>
       <p class="lead-sub">
         <strong>All trigger events are signed by oracle networks</strong> — not by our team. Chainlink Functions is the primary oracle: it re-runs verdict checks, fetches provider health attestations (AWS Health, Cloudflare status), and aggregates parametric nat-cat feeds. Pyth, RedStone, and EAS attestations operate as secondary aggregators feeding the same guarded module. The protocol pays only when the data says it must.
       </p>
       <p class="lead-sub">
-        <span class="redacted" aria-label="redacted, name reserved for launch">CAUTIONER</span> stakers underwrite the <strong>insurance tier</strong> that sponsors opt into when they want guaranteed-correct settlement on high-value bounties — premium-paying sponsors fund staker yield directly, in exchange for protocol-backed refunds when the verdict path fails. This is the medium-term wedge the staking pool is built around.
+        <span class="redacted" aria-label="redacted, name reserved for launch">CAUTIONER</span> stakers underwrite the <strong>insurance tier</strong> that sponsors opt into when they want guaranteed-correct settlement on high-value bounties — premium-paying sponsors fund the <strong>real-fee</strong> share of staker rewards, in exchange for protocol-backed refunds when the verdict path fails. This is the medium-term wedge that turns emissions into real cash-flow yield.
       </p>
       <p class="lead-plain">
         <span class="cmt">//</span> the name is held back until launch. everything else on this page is open and subject to change.
@@ -462,32 +462,32 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         <tbody>
           <tr>
             <td>Airdrop — BOUNTY tiers + Agent Bounty Plates holders (community tokens multiply, up to 2×)</td>
-            <td>30%</td>
-            <td>30,000,000</td>
+            <td>25%</td>
+            <td>25,000,000</td>
             <td>Immediate at TGE (yield access tiered, see above)</td>
           </tr>
           <tr>
             <td>Ecosystem airdrops (quests, retroactive contributors)</td>
-            <td>10%</td>
-            <td>10,000,000</td>
+            <td>5%</td>
+            <td>5,000,000</td>
             <td>Immediate</td>
           </tr>
           <tr>
-            <td>Community emissions / staking rewards</td>
-            <td>15%</td>
-            <td>15,000,000</td>
-            <td>Streams across 18 epochs via emission controller</td>
+            <td><strong>Staking emissions / underwriter yield</strong> — the primary staking reward</td>
+            <td>30%</td>
+            <td>30,000,000</td>
+            <td>Streams to stakers across 18 epochs via the emission controller; lock-multiplier-weighted</td>
           </tr>
           <tr>
-            <td>Protocol-owned liquidity (Uniswap V4 / USDC pair)</td>
+            <td>Protocol-owned liquidity (Aerodrome / Uniswap V4)</td>
             <td>10%</td>
             <td>10,000,000</td>
-            <td>At TGE, LP held by treasury multisig</td>
+            <td>Seeded at TGE (single-sided + emission-incentivized); LP held by treasury multisig</td>
           </tr>
           <tr>
             <td>Treasury (operational reserve)</td>
-            <td>15%</td>
-            <td>15,000,000</td>
+            <td>10%</td>
+            <td>10,000,000</td>
             <td>Liquid; multisig with 7-day timelock above $50K outflow</td>
           </tr>
           <tr>
@@ -529,9 +529,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     </section>
 
     <section>
-      <h2 id="fees">Team operating fees</h2>
+      <h2 id="fees">What stakers earn</h2>
       <p style="color: var(--muted); max-width: var(--read-width);">
-        Token unlocks alone do not fund operations. Every settled bounty produces fee revenue (reviewer fee, sponsor cancel fee, optional insurance premium). That revenue is split on-chain at settlement.
+        Two parts. <strong>Primary — CAUTIO emissions:</strong> the 30% staking-emissions bucket streams to stakers over 18 epochs, weighted by your lock multiplier. This is the headline yield and it needs no outside capital — but it is token emissions (dilution), it is finite, and it is only worth what the token is worth. <strong>Secondary — a share of real protocol fees:</strong> every settled bounty produces fee revenue (reviewer fee, sponsor cancel fee, optional insurance premium), split on-chain at settlement and paid in the fee's own currency (USDC or BOUNTY). This is real cash flow, but it starts small and grows only with bounty volume. Early yield is mostly emissions; the goal is for real fees to take over as volume builds.
       </p>
       <table>
         <thead>
@@ -547,7 +547,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         </tbody>
       </table>
       <p style="color: var(--muted); max-width: var(--read-width); font-size: 13px;">
-        <span class="cmt">//</span> the 25% team share is paid in the bounty's own currency (USDC or BOUNTY) so core contributors have cash flow independent of token price. the 15% core-contributor allocation vests from block one — 5% at TGE, the rest streaming over 36 months — and core contributors stake into the underwriting pool on the same terms as everyone else.
+        <span class="cmt">//</span> the 60% staker share is the "real yield" — variable, paid in the fee's own currency, only as large as actual bounty volume. the 25% team share is paid in the bounty's own currency (USDC or BOUNTY) so core contributors have cash flow independent of token price. the 15% core-contributor allocation vests from block one — 5% at TGE, the rest streaming over 36 months — and core contributors stake into the underwriting pool on the same terms as everyone else.
       </p>
     </section>
 
@@ -597,6 +597,7 @@ flowchart LR
       <div class="not-promising">
         <ul>
           <li><strong>The numbers can move.</strong> Every allocation, threshold, multiplier and tier on this page is provisional and will be re-tuned during mechanism design. Final figures land in the launch post.</li>
+          <li><strong>Yield is not a fixed rate.</strong> The primary reward is CAUTIO emissions — a token, so dilutive and finite. The real-fee share is variable and only as large as actual bounty volume, which can be near zero early on. We do not promise a USDC APY, and we don't print USDC.</li>
           <li><strong>The launch date can slip.</strong> The snapshot is set for 2026-06-03; launch may take longer. We will publish updated timing here, not on social.</li>
           <li><strong>No audit date.</strong> Contracts will be audited before mainnet. We are not committing to a specific firm or window.</li>
           <li><strong>No TGE date.</strong> This is a design announcement, not a sale.</li>

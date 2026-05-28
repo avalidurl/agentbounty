@@ -1,6 +1,6 @@
 ---
 title: "How to be eligible for the CAUTIO airdrop — a 10-question FAQ"
-description: "Plain-English FAQ on the CAUTIO airdrop: the three ways to qualify (BOUNTY holder tiers, Base-ecosystem AI-agent communities, and Agent Bounty Plates NFT holders), the snapshot, how and when you receive tokens, what the token does, supply, and the warnings that matter."
+description: "Plain-English FAQ on the CAUTIO airdrop: the two ways to qualify (BOUNTY holder tiers and Agent Bounty Plates NFT holders), the community multiplier, the snapshot, how and when you receive tokens, how staking rewards work (CAUTIO emissions plus a real-fee share), supply, and the warnings that matter."
 pubDate: 2026-05-28
 tags:
   - cautio
@@ -15,7 +15,7 @@ tags:
 
 ## 1. What is the CAUTIO airdrop, in one breath?
 
-CAUTIO is the token of AgentBounty's on-chain **insurance** layer — not a "number-go-up" coin. People who stake it **underwrite** the protocol against things going wrong (a bad verdict, a cloud or datacenter outage, a natural catastrophe hitting infrastructure, an oracle failing). In return they earn a share of the platform's **real fees**, and they take the loss when an oracle-signed bad event fires. The airdrop seeds that token to the people already in our orbit.
+CAUTIO is the token of AgentBounty's on-chain **insurance** layer — not a "number-go-up" coin. People who stake it **underwrite** the protocol against things going wrong (a bad verdict, a cloud or datacenter outage, a natural catastrophe hitting infrastructure, an oracle failing). In return they earn **CAUTIO emissions** plus a share of the platform's **real fees**, and they take the loss when an oracle-signed bad event fires. The airdrop seeds that token to the people already in our orbit.
 
 ## 2. When is the snapshot?
 
@@ -51,11 +51,11 @@ The airdrop lands **immediately at TGE** (token generation event) for every qual
 Two paths:
 
 - **Hold or trade it** (it will be tradable on Uniswap / Aerodrome).
-- **Stake** — you lock **BOUNTY or USDC** into the underwriting pool for **6 hours up to 365+ days**. Longer lock = bigger reward multiplier (**1× at 6h → 4× at one year**). Yield is paid in **USDC** and can be collected anytime.
+- **Stake** — you lock **BOUNTY or USDC** into the underwriting pool for **6 hours up to 365+ days**. Longer lock = bigger reward multiplier (**1× at 6h → 4× at one year**). Your reward is **CAUTIO emissions** (the primary, lock-weighted) **plus a share of real protocol fees** (variable, grows with volume). Harvest whatever has accrued anytime. Early on, rewards are mostly emissions — not USDC.
 
 ## 7. Where does the yield come from?
 
-Real protocol fees, split **60% stakers / 25% team (paid in USDC) / 15% treasury**, plus extra yield from parking idle USDC in Aave. It's **real cash flow**, not just freshly-printed tokens.
+Two sources. **Primary — CAUTIO emissions:** the 30% staking-emissions bucket streams to stakers over 18 epochs (lock-weighted). It needs no outside capital, but it's token emissions — dilutive, finite, and only worth what the token is worth. **Secondary — a share of real protocol fees:** every settled bounty's fees split **60% stakers / 25% team / 15% treasury**, paid in the fee's own currency (USDC or BOUNTY), plus Aave yield on idle pool USDC. That part is real cash flow but **variable — only as big as actual bounty volume**, so early on it can be near zero. The plan: emissions bootstrap the yield, real fees take over as volume grows. **We don't print USDC** — the fee share is whatever flows in.
 
 ## 8. What's the risk?
 
@@ -63,7 +63,7 @@ The important one: **staking = underwriting = you can lose your stake.** If an o
 
 ## 9. How big is supply, and what will the market cap be?
 
-Supply is **fixed at 100,000,000** tokens (capped — no minting more). Working allocation: 30% airdrop · 10% ecosystem airdrops · 15% community emissions · 10% liquidity · 15% treasury · 15% core contributors (5% at launch, the rest vesting over 36 months, no cliff) · 5% reserve.
+Supply is **fixed at 100,000,000** tokens (capped — no minting more). Working allocation: 25% airdrop · 5% ecosystem airdrops · **30% staking emissions / underwriter yield** · 10% liquidity · 10% treasury · 15% core contributors (5% at launch, the rest vesting over 36 months, no cliff) · 5% reserve.
 
 **Market cap? Nobody can honestly tell you — and be suspicious of anyone who does.** Market cap = token price × supply, and there is **no price yet: no sale, no listing, no TGE date.** Until it trades, every "it'll be a \$X million coin" is a guess.
 
