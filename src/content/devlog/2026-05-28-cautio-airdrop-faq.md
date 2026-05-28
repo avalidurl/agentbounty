@@ -1,5 +1,5 @@
 ---
-title: "How to be eligible for the CAUTIO airdrop — a 10-question FAQ"
+title: "How to qualify for the CAUTIO airdrop — a 10-question FAQ"
 description: "Plain-English FAQ on the CAUTIO airdrop: the two ways to qualify (BOUNTY holder tiers and Agent Bounty Plates NFT holders), the community multiplier, the snapshot, how and when you receive tokens, how staking rewards work (CAUTIO emissions plus a real-fee share), supply, and the warnings that matter."
 pubDate: 2026-05-28
 tags:
