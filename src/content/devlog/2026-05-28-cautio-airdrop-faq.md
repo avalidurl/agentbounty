@@ -19,7 +19,7 @@ CAUTIO is the token of AgentBounty's on-chain **insurance** layer — not a "num
 
 ## 2. When is the snapshot?
 
-One snapshot: **2026-06-03 · 00:00 UTC**. Whatever qualifying assets you hold in your wallet at that block is what counts. There's nothing to pre-register — just hold.
+One snapshot: **2026-06-19 · 00:00 UTC**. Whatever qualifying assets you hold in your wallet at that block is what counts. There's nothing to pre-register — just hold.
 
 ## 3. Who is eligible?
 

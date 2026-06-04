@@ -3,7 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 <BaseLayout
   title="Staking"
-  description="A staking + yield token. Stake BOUNTY or USDC to underwrite AgentBounty and earn CAUTIO emissions, plus a growing share of real protocol fees. Covers verdict failure, compute and datacenter outages, natural catastrophes hitting infrastructure, and oracle feed failures. All triggers signed by oracle networks. Snapshot 2026-06-03 00:00 UTC. Working design, every number subject to change."
+  description="A staking + yield token. Stake BOUNTY or USDC to underwrite AgentBounty and earn CAUTIO emissions, plus a growing share of real protocol fees. Covers verdict failure, compute and datacenter outages, natural catastrophes hitting infrastructure, and oracle feed failures. All triggers signed by oracle networks. Snapshot 2026-06-19 00:00 UTC. Working design, every number subject to change."
   preview={true}
 >
   <style is:global>
@@ -245,7 +245,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
   <section class="shell" style="padding: var(--space-6) 0 var(--space-7);">
     <div class="staking-banner" role="status">
-      <strong>DRAFT</strong> · SNAPSHOT 2026-06-03 · 00:00 UTC · ALL NUMBERS SUBJECT TO CHANGE
+      <strong>DRAFT</strong> · SNAPSHOT 2026-06-19 · 00:00 UTC · ALL NUMBERS SUBJECT TO CHANGE
     </div>
 
     <section style="padding: var(--space-7) 0 var(--space-3);">
@@ -269,7 +269,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     <section class="countdown" id="snapshot-countdown" aria-live="polite">
       <div>
         <p class="label">Snapshot opens in</p>
-        <p class="target">Target block lands at <strong>2026-06-03 · 00:00 UTC</strong>.</p>
+        <p class="target">Target block lands at <strong>2026-06-19 · 00:00 UTC</strong>.</p>
       </div>
       <div class="countdown-clock" role="timer" aria-label="time remaining to snapshot">
         <div class="countdown-cell"><span class="num" id="cd-d">--</span><span class="unit">days</span></div>
@@ -369,7 +369,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     <section>
       <h2 id="snapshot">How to qualify for the CAUTIO airdrop?<span class="change-tag">subject to change</span></h2>
       <p class="lead-sub">
-        One snapshot — <strong>2026-06-03 · 00:00 UTC</strong>. <strong>Two ways to qualify</strong> for the airdrop: hold <strong>BOUNTY</strong> (tiered) or an <strong>Agent Bounty Plate</strong> at that block. Holding <strong>Base-ecosystem AI-agent community tokens</strong> then <em>multiplies</em> the airdrop you qualified for — up to a <strong>2.0× cap</strong> — but does not make you eligible on its own. (Your BOUNTY tier only changes <em>when</em> you can start earning staking yield, not whether you get the airdrop.)
+        One snapshot — <strong>2026-06-19 · 00:00 UTC</strong>. <strong>Two ways to qualify</strong> for the airdrop: hold <strong>BOUNTY</strong> (tiered) or an <strong>Agent Bounty Plate</strong> at that block. Holding <strong>Base-ecosystem AI-agent community tokens</strong> then <em>multiplies</em> the airdrop you qualified for — up to a <strong>2.0× cap</strong> — but does not make you eligible on its own. (Your BOUNTY tier only changes <em>when</em> you can start earning staking yield, not whether you get the airdrop.)
       </p>
 
       <h3>1 · BOUNTY holders <span class="cmt">— tiered</span></h3>
@@ -426,10 +426,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           </tr>
         </thead>
         <tbody>
-          <tr><td>Aeon Framework <small style="color: var(--muted);">(Bankr ecosystem)</small></td><td>TBC</td><td><code>TBC</code></td><td>TBC</td></tr>
+          <tr><td>Aeon Framework <small style="color: var(--muted);">(Bankr ecosystem)</small></td><td>Base</td><td><code>0xbf8e8f0e8866a7052f948c16508644347c57aba3</code></td><td>TBC</td></tr>
           <tr><td>MiroShark</td><td>Base</td><td><code>0xd7bc6a05a56655fb2052f742b012d1dfd66e1ba3</code></td><td>TBC</td></tr>
           <tr><td>gitlawb</td><td>Base</td><td><code>0x5f980dcfc4c0fa3911554cf5ab288ed0eb13dba3</code></td><td>TBC</td></tr>
-          <tr><td>Surplus</td><td>TBC</td><td><code>TBC</code></td><td>TBC</td></tr>
+          <tr><td>Surplus</td><td>Base</td><td><code>0xc52aedec3374422d7510e294cfaa90799595cba3</code></td><td>TBC</td></tr>
           <tr><td colspan="4" style="color: var(--muted); font-style: italic;">More communities to be announced before snapshot.</td></tr>
         </tbody>
       </table>
@@ -598,7 +598,7 @@ flowchart LR
         <ul>
           <li><strong>The numbers can move.</strong> Every allocation, threshold, multiplier and tier on this page is provisional and will be re-tuned during mechanism design. Final figures land in the launch post.</li>
           <li><strong>Yield is not a fixed rate.</strong> The primary reward is CAUTIO emissions — a token, so dilutive and finite. The real-fee share is variable and only as large as actual bounty volume, which can be near zero early on. We do not promise a USDC APY, and we don't print USDC.</li>
-          <li><strong>The launch date can slip.</strong> The snapshot is set for 2026-06-03; launch may take longer. We will publish updated timing here, not on social.</li>
+          <li><strong>The launch date can slip.</strong> The snapshot is set for 2026-06-19; launch may take longer. We will publish updated timing here, not on social.</li>
           <li><strong>No audit date.</strong> Contracts will be audited before mainnet. We are not committing to a specific firm or window.</li>
           <li><strong>No TGE date.</strong> This is a design announcement, not a sale.</li>
           <li><strong>Slashing mechanics will publish in v0.2.</strong> The trigger conditions, dispute window, and quorum are deliberately undefined here. We will not lock them in under launch pressure.</li>
@@ -611,7 +611,7 @@ flowchart LR
       <h2 id="where">Where this leaves you</h2>
       <div class="door-row">
         <span class="door-tag">[bench]</span>
-        <span>You hold ≥3,000,000,000 BOUNTY at the snapshot block (<strong>2026-06-03 · 00:00 UTC</strong>). You receive an airdrop. The underwriting pool opens at <strong>T+0</strong> — same block as snapshot.</span>
+        <span>You hold ≥3,000,000,000 BOUNTY at the snapshot block (<strong>2026-06-19 · 00:00 UTC</strong>). You receive an airdrop. The underwriting pool opens at <strong>T+0</strong> — same block as snapshot.</span>
       </div>
       <div class="door-row">
         <span class="door-tag">[gallery]</span>
@@ -655,7 +655,7 @@ flowchart LR
   </script>
   <script is:inline>
     (function () {
-      var SNAPSHOT_UTC_MS = Date.UTC(2026, 5, 3, 0, 0, 0);
+      var SNAPSHOT_UTC_MS = Date.UTC(2026, 5, 19, 0, 0, 0);
       var d = document.getElementById('cd-d');
       var h = document.getElementById('cd-h');
       var m = document.getElementById('cd-m');
