@@ -16,6 +16,8 @@ export interface Props {
   toc?: TocItem[];
   eyebrow?: string;
   showStatusBanner?: boolean;
+  canonical?: string;
+  ogImage?: string;
 }
 
 const {
@@ -25,9 +27,11 @@ const {
   toc = [],
   eyebrow,
   showStatusBanner = true,
+  canonical,
+  ogImage,
 } = Astro.props;
 ---
-<BaseLayout title={title} description={description}>
+<BaseLayout title={title} description={description} canonical={canonical} ogImage={ogImage}>
   {showStatusBanner ? <StatusBanner status={status} /> : null}
   <div class="docs-shell shell">
     <article class="docs-main">

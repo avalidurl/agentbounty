@@ -21,6 +21,8 @@ const toc = headings
   title={entry.data.title}
   description={entry.data.description}
   toc={toc}
+  canonical={entry.data.canonicalUrl}
+  ogImage={entry.data.ogImage}
   eyebrow={`Blog · ${entry.data.pubDate.toISOString().slice(0, 10)}`}
 >
   <Content />

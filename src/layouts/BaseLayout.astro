@@ -8,6 +8,7 @@ export interface Props {
   title?: string;
   description?: string;
   canonical?: string;
+  ogImage?: string;
   preview?: boolean;
 }
 
@@ -15,6 +16,7 @@ const {
   title = SITE.name,
   description = SITE.description,
   canonical,
+  ogImage,
   preview = true,
 } = Astro.props;
 
@@ -23,6 +25,7 @@ const fullTitle =
 const canonicalUrl = canonical
   ? new URL(canonical, SITE.url).toString()
   : new URL(Astro.url.pathname, SITE.url).toString();
+const ogImageUrl = ogImage ? new URL(ogImage, SITE.url).toString() : undefined;
 ---
 <!doctype html>
 <html lang="en">
@@ -57,7 +60,15 @@ const canonicalUrl = canonical
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:site_name" content={SITE.name} />
-    <meta name="twitter:card" content="summary" />
+    {ogImageUrl ? (
+      <>
+        <meta property="og:image" content={ogImageUrl} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta name="twitter:image" content={ogImageUrl} />
+      </>
+    ) : null}
+    <meta name="twitter:card" content={ogImageUrl ? "summary_large_image" : "summary"} />
     {preview ? <meta name="robots" content="index, follow" /> : null}
     <script is:inline>
       (function () {
