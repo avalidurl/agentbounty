@@ -103,11 +103,36 @@ h2 {
   margin-top: var(--space-7);
   padding-top: var(--space-3);
   border-top: 1px solid var(--line);
+  scroll-margin-top: 1rem;
 }
 
 h3 {
   font-size: 18px;
   margin-top: var(--space-6);
+  scroll-margin-top: 1rem;
+}
+
+.hanchor {
+  margin-left: 0.35em;
+  text-decoration: none;
+  font-weight: 400;
+  opacity: 0;
+  transition: opacity 0.12s;
+  color: var(--muted);
+}
+
+h1:hover > .hanchor,
+h2:hover > .hanchor,
+h3:hover > .hanchor,
+h4:hover > .hanchor,
+.hanchor:focus-visible {
+  opacity: 0.55;
+}
+
+.hanchor:hover {
+  opacity: 1;
+  color: var(--accent-go);
+  text-decoration: none;
 }
 
 p,
